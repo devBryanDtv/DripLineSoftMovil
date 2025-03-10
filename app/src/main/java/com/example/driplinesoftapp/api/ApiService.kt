@@ -4,6 +4,8 @@ import com.example.driplinesoftapp.data.ClienteResponse
 import com.example.driplinesoftapp.data.LoginRequest
 import com.example.driplinesoftapp.data.LoginResponse
 import com.example.driplinesoftapp.data.MenuResponse
+import com.example.driplinesoftapp.data.PedidoRequest
+import com.example.driplinesoftapp.data.PedidoResponse
 import com.example.driplinesoftapp.data.Producto
 import com.example.driplinesoftapp.data.ProductoCarrito
 import com.example.driplinesoftapp.data.ProductoRequest
@@ -40,4 +42,8 @@ interface ApiService {
 
     @POST("productos/carrito/detalles")
     fun obtenerDetallesProductosCarrito(@Body productos: ProductoRequest): Call<ProductoResponse_2>
+
+    @POST("crear-pedido")
+    fun crearPedido(@Body pedidoRequest: PedidoRequest): Call<PedidoResponse>
+
 }

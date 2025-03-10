@@ -17,17 +17,20 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".CarritoActivity"
-            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
+            android:name=".PedidoActivity"
             android:exported="false" />
+        <activity
+            android:name=".CarritoActivity"
+            android:exported="false"
+             />
         <activity
             android:name=".ProductoActivity"
             android:exported="false"
-            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar" />
+             />
         <activity
             android:name=".MenuActivity"
             android:exported="false"
-            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar" />
+            />
         <activity
             android:name=".SucursalActivity"
             android:exported="false"
