@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">DripLineSoftApp</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_restaurante">Restaurantes</string>
+    <string name="title_pedido">Pedidos</string>
+    <string name="title_perfil">Perfil</string>
+    <string name="title_activity_negocio">NegocioActivity</string>
+
+    <string name="title_cliente">Cartera Clientes</string>
+    <string name="title_sucursal">Sucursal</string>
+    <string name="title_perfil_negocio">Perfil Negocio</string>
+    <string name="logo">Logo</string>
+    <string name="correo_electr_nico">Correo Electrónico</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="confirmar_contrase_a">Confirmar Contraseña</string>
+    <string name="contrase_a">Contraseña</string>
+    <string name="nombre">Nombre</string>
+    <string name="carrito">carrito</string>
+</resources>

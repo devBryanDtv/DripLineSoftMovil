@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_restaurante">
+
+    <fragment
+        android:id="@+id/navigation_restaurante"
+        android:name="com.example.driplinesoftapp.ui.restaurante.RestauranteFragment"
+        android:label="@string/title_restaurante"
+        tools:layout="@layout/fragment_restaurantes" />
+
+    <fragment
+        android:id="@+id/navigation_pedido"
+        android:name="com.example.driplinesoftapp.ui.pedido.PedidoFragment"
+        android:label="@string/title_pedido"
+        tools:layout="@layout/fragment_pedido" />
+
+    <fragment
+        android:id="@+id/navigation_perfil"
+        android:name="com.example.driplinesoftapp.ui.perfil.PerfilFragment"
+        android:label="@string/title_perfil"
+        tools:layout="@layout/fragment_perfil" />
+</navigation>

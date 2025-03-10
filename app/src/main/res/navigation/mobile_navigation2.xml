@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation2"
+    app:startDestination="@+id/navigation_cliente_negocio">
+
+    <fragment
+        android:id="@+id/navigation_cliente_negocio"
+        android:name="com.example.driplinesoftapp.ui.cliente_negocio.ClienteFragment"
+        android:label="@string/title_cliente"
+        tools:layout="@layout/fragment_clientes_negocio" />
+
+    <fragment
+        android:id="@+id/navigation_sucursal_negocio"
+        android:name="com.example.driplinesoftapp.ui.sucursal_negocio.SucursalFragment"
+        android:label="@string/title_sucursal"
+        tools:layout="@layout/fragment_sucursales_negocio" />
+
+    <fragment
+        android:id="@+id/navigation_perfil_negocio"
+        android:name="com.example.driplinesoftapp.ui.perfil_negocio.PerfilNegocioFragment"
+        android:label="@string/title_perfil_negocio"
+        tools:layout="@layout/fragment_perfil_negocio" />
+</navigation>
