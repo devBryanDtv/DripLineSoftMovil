@@ -26,6 +26,6 @@
         android:gravity="center"
         android:layout_gravity="top|end"
         android:translationX="-5dp"
-    android:translationY="-5dp"
-    android:visibility="gone"/>
+        android:translationY="-5dp"
+        android:visibility="gone"/>
 </FrameLayout>

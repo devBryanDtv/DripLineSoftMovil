@@ -15,6 +15,7 @@ import com.example.driplinesoftapp.data.ProductoResponse
 import com.example.driplinesoftapp.databinding.ActivityProductoBinding
 import com.example.driplinesoftapp.models.CarritoDatabaseHelper
 import com.example.driplinesoftapp.ui.restaurante.ProductoAdapter
+import com.example.driplinesoftapp.utils.SessionManager
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,8 +25,10 @@ class ProductoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProductoBinding
     private lateinit var dbHelper: CarritoDatabaseHelper
+    private lateinit var sessionManager: SessionManager
     private lateinit var btnConfirmarSeleccion: Button
     private var idMenu: Int = -1
+    private var idUsuario: Int = -1  // ID del usuario autenticado
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,24 +36,30 @@ class ProductoActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dbHelper = CarritoDatabaseHelper(this)
-        idMenu = intent.getIntExtra("ID_MENU", -1)
+        sessionManager = SessionManager(this)
 
+        // Obtener el usuario autenticado
+        val usuario = sessionManager.getUser()
+        if (usuario == null) {
+            Toast.makeText(this, "Error: No hay usuario autenticado", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        idUsuario = usuario.idUsuario  // Asignar el ID del usuario autenticado
+
+        idMenu = intent.getIntExtra("ID_MENU", -1)
         binding.recyclerViewProductos.layoutManager = LinearLayoutManager(this)
 
         // Inicializar el botón para confirmar selección
         btnConfirmarSeleccion = binding.btnConfirmarSeleccion
-        // Dentro de ProductoActivity
         btnConfirmarSeleccion.setOnClickListener {
-            // Obtener los productos del carrito
-            val productosCarrito = dbHelper.obtenerProductosPorUsuario(1)
-
-            // Crear un Intent para pasar los productos al carrito
+            val productosCarrito = dbHelper.obtenerProductosPorUsuario(idUsuario)
             val intent = Intent(this, CarritoActivity::class.java)
-            val productosJson = Gson().toJson(productosCarrito)  // Convertir la lista de productos a JSON
-            intent.putExtra("productos_carrito", productosJson)  // Pasar los productos al carrito
+            val productosJson = Gson().toJson(productosCarrito)
+            intent.putExtra("productos_carrito", productosJson)
             startActivity(intent)
         }
-
 
         // Verificar la cantidad de productos en el carrito al cargar
         verificarCantidadCarrito()
@@ -78,9 +87,10 @@ class ProductoActivity : AppCompatActivity() {
                             binding.tvNoProductos.visibility = View.VISIBLE
                         } else {
                             binding.tvNoProductos.visibility = View.GONE
-                            val adapter = ProductoAdapter(productos, dbHelper, ::agregarProductoAlCarrito) {
+                            val adapter = ProductoAdapter(productos, dbHelper, sessionManager, ::agregarProductoAlCarrito) {
                                 actualizarCantidadCarrito()
                             }
+
                             binding.recyclerViewProductos.adapter = adapter
                         }
                     } else {
@@ -95,13 +105,10 @@ class ProductoActivity : AppCompatActivity() {
             })
     }
 
-
-    // Método para verificar la cantidad total del carrito al cargar la actividad
     private fun verificarCantidadCarrito() {
-        val cantidadTotal = dbHelper.obtenerProductosPorUsuario(1).sumOf { it.cantidad }
+        val cantidadTotal = dbHelper.obtenerProductosPorUsuario(idUsuario).sumOf { it.cantidad }
         Log.d("ProductoActivity", "Cantidad total en el carrito al cargar: $cantidadTotal")
 
-        // Si hay productos en el carrito, mostrar el botón y actualizar el texto
         if (cantidadTotal > 0) {
             btnConfirmarSeleccion.visibility = View.VISIBLE
             btnConfirmarSeleccion.text = "Confirmar Selección ($cantidadTotal)"
@@ -110,12 +117,10 @@ class ProductoActivity : AppCompatActivity() {
         }
     }
 
-    // Método para actualizar la cantidad total en el carrito y el botón
     private fun actualizarCantidadCarrito() {
-        val cantidadTotal = dbHelper.obtenerProductosPorUsuario(1).sumOf { it.cantidad }
+        val cantidadTotal = dbHelper.obtenerProductosPorUsuario(idUsuario).sumOf { it.cantidad }
         Log.d("ProductoActivity", "Cantidad total en el carrito: $cantidadTotal")
 
-        // Actualizar el texto del botón de confirmación
         if (cantidadTotal > 0) {
             btnConfirmarSeleccion.visibility = View.VISIBLE
             btnConfirmarSeleccion.text = "Confirmar Selección ($cantidadTotal)"
@@ -125,23 +130,21 @@ class ProductoActivity : AppCompatActivity() {
     }
 
     private fun agregarProductoAlCarrito(producto: Producto) {
-        val productoExistente = dbHelper.obtenerProductoPorId(1, producto.idProducto)
+        val productoExistente = dbHelper.obtenerProductoPorId(idUsuario, producto.idProducto)
 
         if (productoExistente != null) {
             val nuevaCantidad = productoExistente.cantidad + 1
             val productoCarrito = ProductoCarrito(idProducto = producto.idProducto, cantidad = nuevaCantidad)
-            dbHelper.actualizarCantidad(1, productoCarrito)
+            dbHelper.actualizarCantidad(idUsuario, productoCarrito)
 
             Log.d("ProductoActivity", "Cantidad actualizada para el producto ${producto.nombreProducto}")
         } else {
-            dbHelper.agregarProducto(1, producto.idProducto, 1)
+            dbHelper.agregarProducto(idUsuario, producto.idProducto, 1)
             Log.d("ProductoActivity", "Producto agregado al carrito: ${producto.nombreProducto}")
         }
 
-        // Actualiza el producto en el Adapter para que se muestren los controles inmediatamente
         (binding.recyclerViewProductos.adapter as? ProductoAdapter)?.actualizarProducto(producto)
 
         actualizarCantidadCarrito()
     }
-
 }

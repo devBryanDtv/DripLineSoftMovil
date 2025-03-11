@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:paddingTop="?attr/actionBarSize"
     android:padding="16dp"
     tools:context=".SucursalActivity">
 
@@ -35,6 +37,7 @@
             android:id="@+id/recyclerViewSucursales"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingTop="8dp"
             android:scrollbars="vertical"/>
     </LinearLayout>
 

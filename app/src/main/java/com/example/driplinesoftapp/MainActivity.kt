@@ -14,6 +14,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.driplinesoftapp.databinding.ActivityMainBinding
 import com.example.driplinesoftapp.models.CarritoDatabaseHelper
+import com.example.driplinesoftapp.utils.SessionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -85,8 +86,13 @@ class MainActivity : AppCompatActivity() {
     private fun actualizarContadorCarrito() {
         if (tvCartCount == null) return
 
-        // Obtener la cantidad total de productos del carrito desde SQLite
-        val cantidadProductos = carritoDb.obtenerCantidadTotalProductos(1) // ID de usuario estático por ahora
+        // Obtener el ID del usuario autenticado desde SessionManager
+        val sessionManager = SessionManager(this)
+        val usuario = sessionManager.getUser()
+        val idUsuario = usuario?.idUsuario ?: return
+
+        // Obtener la cantidad total de productos del carrito del usuario autenticado
+        val cantidadProductos = carritoDb.obtenerCantidadTotalProductos(idUsuario)
 
         if (cantidadProductos == 0) {
             tvCartCount?.visibility = View.GONE
@@ -95,6 +101,7 @@ class MainActivity : AppCompatActivity() {
             tvCartCount?.text = cantidadProductos.toString()
         }
     }
+
 
     // Agregamos este método para que se actualice el contador cada vez que regresemos del Carrito
     override fun onResume() {

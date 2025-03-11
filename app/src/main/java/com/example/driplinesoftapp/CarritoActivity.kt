@@ -13,6 +13,7 @@ import com.example.driplinesoftapp.data.*
 import com.example.driplinesoftapp.databinding.ActivityCarritoBinding
 import com.example.driplinesoftapp.models.CarritoDatabaseHelper
 import com.example.driplinesoftapp.ui.restaurante.CarritoAdapter
+import com.example.driplinesoftapp.utils.SessionManager
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,8 +23,10 @@ class CarritoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCarritoBinding
     private lateinit var dbHelper: CarritoDatabaseHelper
+    private lateinit var sessionManager: SessionManager
     private lateinit var btnRealizarPedido: Button
     private var subtotalActual: Double = 0.0
+    private var idUsuario: Int = -1  // ID del usuario autenticado
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +34,18 @@ class CarritoActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dbHelper = CarritoDatabaseHelper(this)
+        sessionManager = SessionManager(this)
+
+        // Obtener el usuario autenticado
+        val usuario = sessionManager.getUser()
+        if (usuario == null) {
+            Toast.makeText(this, "Error: No hay usuario autenticado", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        idUsuario = usuario.idUsuario  // Asignar el ID del usuario autenticado
+
         binding.recyclerViewCarrito.layoutManager = LinearLayoutManager(this)
 
         btnRealizarPedido = binding.btnRealizarPedido
@@ -42,7 +57,7 @@ class CarritoActivity : AppCompatActivity() {
     }
 
     private fun cargarProductosCarrito() {
-        val productosDelCarrito = dbHelper.obtenerProductosPorUsuario(1)
+        val productosDelCarrito = dbHelper.obtenerProductosPorUsuario(idUsuario)
 
         if (productosDelCarrito.isNotEmpty()) {
             val productosIds = productosDelCarrito.map { ProductoCarrito(it.idProducto, it.cantidad) }
@@ -70,16 +85,18 @@ class CarritoActivity : AppCompatActivity() {
                         Log.d("CarritoActivity", "Productos con detalles: ${productosConDetalles.size}")
 
                         productosConDetalles.forEach { producto ->
-                            producto.cantidad = dbHelper.obtenerProductoPorId(1, producto.idProducto)?.cantidad ?: 0
+                            producto.cantidad = dbHelper.obtenerProductoPorId(idUsuario, producto.idProducto)?.cantidad ?: 0
                         }
 
                         val adapter = CarritoAdapter(
                             productosConDetalles.toMutableList(),
                             dbHelper,
+                            sessionManager,
                             ::actualizarCantidadCarrito
                         ) { nuevoSubtotal ->
                             actualizarSubtotalEnVista(nuevoSubtotal)
                         }
+
 
                         binding.recyclerViewCarrito.adapter = adapter
                         actualizarSubtotal(productosConDetalles)
@@ -104,19 +121,19 @@ class CarritoActivity : AppCompatActivity() {
 
     private fun actualizarSubtotal(productos: List<Producto>) {
         val subtotal = productos.sumOf {
-            it.precio * (dbHelper.obtenerProductoPorId(1, it.idProducto)?.cantidad ?: 0)
+            it.precio * (dbHelper.obtenerProductoPorId(idUsuario, it.idProducto)?.cantidad ?: 0)
         }
         actualizarSubtotalEnVista(subtotal)
     }
 
     private fun actualizarCantidadCarrito() {
-        val cantidadTotal = dbHelper.obtenerProductosPorUsuario(1).sumOf { it.cantidad }
+        val cantidadTotal = dbHelper.obtenerProductosPorUsuario(idUsuario).sumOf { it.cantidad }
         btnRealizarPedido.isEnabled = cantidadTotal > 0
         btnRealizarPedido.text = "Realizar Pedido ($cantidadTotal)"
     }
 
     private fun enviarDatosAPedidoActivity() {
-        val productos = dbHelper.obtenerProductosPorUsuario(1)
+        val productos = dbHelper.obtenerProductosPorUsuario(idUsuario)
 
         val productosJson = Gson().toJson(productos)
 

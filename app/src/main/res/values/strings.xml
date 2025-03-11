@@ -16,4 +16,5 @@
     <string name="contrase_a">Contraseña</string>
     <string name="nombre">Nombre</string>
     <string name="carrito">carrito</string>
+    <string name="no_tienes_cuenta_reg_strate_aqu">¿No tienes cuenta? Regístrate aquí</string>
 </resources>

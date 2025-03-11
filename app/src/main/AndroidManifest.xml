@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -18,18 +16,23 @@
         tools:targetApi="31">
         <activity
             android:name=".PedidoActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
+            />
         <activity
             android:name=".CarritoActivity"
             android:exported="false"
-             />
+            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
+            />
         <activity
             android:name=".ProductoActivity"
             android:exported="false"
-             />
+            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
+            />
         <activity
             android:name=".MenuActivity"
             android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
             />
         <activity
             android:name=".SucursalActivity"
@@ -53,10 +56,8 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

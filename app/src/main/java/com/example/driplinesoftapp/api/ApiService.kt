@@ -11,6 +11,8 @@ import com.example.driplinesoftapp.data.ProductoCarrito
 import com.example.driplinesoftapp.data.ProductoRequest
 import com.example.driplinesoftapp.data.ProductoResponse
 import com.example.driplinesoftapp.data.ProductoResponse_2
+import com.example.driplinesoftapp.data.RegisterRequest
+import com.example.driplinesoftapp.data.RegisterResponse
 import com.example.driplinesoftapp.data.SucursalResponse
 import retrofit2.Call
 import retrofit2.http.Body
@@ -45,5 +47,8 @@ interface ApiService {
 
     @POST("crear-pedido")
     fun crearPedido(@Body pedidoRequest: PedidoRequest): Call<PedidoResponse>
+
+    @POST("registro") // Endpoint en Laravel
+    fun register(@Body request: RegisterRequest): Call<RegisterResponse>
 
 }

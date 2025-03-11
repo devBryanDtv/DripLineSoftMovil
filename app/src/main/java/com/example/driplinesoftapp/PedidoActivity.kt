@@ -25,7 +25,7 @@ class PedidoActivity : AppCompatActivity() {
     private lateinit var btnRealizarPedido: Button
     private lateinit var edtNota: EditText
     private lateinit var edtDescuento: EditText
-    private lateinit var spinnerMetodoPago: EditText  // Ahora es un EditText
+    private lateinit var spinnerMetodoPago: EditText
 
     private var productos: List<ProductoCarrito> = mutableListOf()
     private var subtotal: Double = 0.0
@@ -46,7 +46,7 @@ class PedidoActivity : AppCompatActivity() {
         } else {
             Log.e("PedidoActivity", "No estás logueado, redirigiendo al login.")
             Toast.makeText(this, "No estás logueado", Toast.LENGTH_SHORT).show()
-            finish()  // Cierra la actividad si el usuario no está logueado
+            finish()
         }
 
         // Obtener datos del Intent
@@ -70,53 +70,59 @@ class PedidoActivity : AppCompatActivity() {
         spinnerMetodoPago.isFocusable = false
         spinnerMetodoPago.isClickable = true
 
-        // Llenar el AutoCompleteTextView con los métodos de pago
-        val methods = listOf("Efectivo", "Tarjeta de credito/debito", "Transferencia bancaria")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, methods)
+        // Definir los métodos de pago con los valores correctos
+        val metodoPagoMap = mapOf(
+            "Efectivo" to "efectivo",
+            "Tarjeta de credito/debito" to "tarjeta",
+            "Transferencia bancaria" to "transferencia"
+        )
+
+        val metodoPagoNombres = metodoPagoMap.keys.toList()
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, metodoPagoNombres)
         spinnerMetodoPago.setText("Selecciona el método de pago")
 
         // Al presionar el EditText se abrirá el Dialog
         spinnerMetodoPago.setOnClickListener {
-            mostrarDialogMetodosPago(methods)
+            mostrarDialogMetodosPago(metodoPagoNombres)
         }
 
         btnRealizarPedido.setOnClickListener {
-            realizarPedido()
+            realizarPedido(metodoPagoMap)
         }
     }
 
     private fun mostrarDialogMetodosPago(methods: List<String>) {
-        // Crear el Dialog
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Selecciona el método de pago")
         builder.setItems(methods.toTypedArray()) { _, which ->
             val selectedMethod = methods[which]
             spinnerMetodoPago.setText(selectedMethod)  // Establecer el valor en el EditText
         }
-        builder.show()  // Mostrar el Dialog
+        builder.show()
     }
 
-    private fun realizarPedido() {
-        val metodoPago = spinnerMetodoPago.text.toString()
+    private fun realizarPedido(metodoPagoMap: Map<String, String>) {
+        val metodoPagoSeleccionado = spinnerMetodoPago.text.toString()
 
-        // Solo continuar si el método de pago es Efectivo
-        if (metodoPago != "Efectivo") {
-            Toast.makeText(this, "Solo se puede realizar el pedido con Efectivo", Toast.LENGTH_SHORT).show()
-            return  // No realizar el pedido si el método de pago no es Efectivo
+        // Verificar que el método de pago seleccionado sea válido
+        val metodoPago = metodoPagoMap[metodoPagoSeleccionado]
+        if (metodoPago == null) {
+            Toast.makeText(this, "Método de pago no válido", Toast.LENGTH_SHORT).show()
+            return
         }
 
         val nota = edtNota.text.toString()
         val descuento = edtDescuento.text.toString().toDoubleOrNull() ?: 0.0
 
         // Log de los datos antes de enviar la solicitud
-        Log.d("PedidoActivity", "Metodo de pago seleccionado: $metodoPago")
+        Log.d("PedidoActivity", "Método de pago seleccionado: $metodoPago")
         Log.d("PedidoActivity", "Nota: $nota")
         Log.d("PedidoActivity", "Descuento: $descuento")
 
         // Crear el objeto de envío
         val pedidoRequest = PedidoRequest(
             idUsuarioCliente = idUsuarioCliente,
-            metodoPago = metodoPago,
+            metodoPago = metodoPago, // Se envía el valor correcto
             productos = productos,
             nota = nota,
             descuento = descuento
