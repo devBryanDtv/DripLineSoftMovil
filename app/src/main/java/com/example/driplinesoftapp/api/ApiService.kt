@@ -4,8 +4,10 @@ import com.example.driplinesoftapp.data.ClienteResponse
 import com.example.driplinesoftapp.data.LoginRequest
 import com.example.driplinesoftapp.data.LoginResponse
 import com.example.driplinesoftapp.data.MenuResponse
+import com.example.driplinesoftapp.data.Pedido
 import com.example.driplinesoftapp.data.PedidoRequest
 import com.example.driplinesoftapp.data.PedidoResponse
+import com.example.driplinesoftapp.data.PedidoResponse2
 import com.example.driplinesoftapp.data.Producto
 import com.example.driplinesoftapp.data.ProductoCarrito
 import com.example.driplinesoftapp.data.ProductoRequest
@@ -50,5 +52,8 @@ interface ApiService {
 
     @POST("registro") // Endpoint en Laravel
     fun register(@Body request: RegisterRequest): Call<RegisterResponse>
+
+    @GET("pedidos/historial/{id_usuario}")
+    fun obtenerHistorialPedidos(@Path("id_usuario") idUsuario: Int): Call<PedidoResponse2>
 
 }
