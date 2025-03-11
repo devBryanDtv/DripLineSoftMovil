@@ -156,4 +156,24 @@ class CarritoDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABA
         db.close()
         return producto
     }
+
+    // ➤ Obtener la cantidad total de productos en el carrito de un usuario
+    fun obtenerCantidadTotalProductos(idUsuario: Int): Int {
+        val db = readableDatabase
+        var cantidadTotal = 0
+
+        val cursor = db.rawQuery(
+            "SELECT SUM($COLUMN_CANTIDAD) AS total FROM $TABLE_CARRITO WHERE $COLUMN_ID_USUARIO = ?",
+            arrayOf(idUsuario.toString())
+        )
+
+        if (cursor.moveToFirst()) {
+            cantidadTotal = cursor.getInt(cursor.getColumnIndexOrThrow("total"))
+        }
+
+        cursor.close()
+        db.close()
+        return cantidadTotal
+    }
+
 }

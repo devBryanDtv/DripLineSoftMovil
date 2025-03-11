@@ -1,13 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_carrito"
+        android:id="@+id/action_cart"
         android:icon="@drawable/ic_carrito"
         android:title="Carrito"
-        android:actionLayout="@layout/action_cart_layout"
-        android:orderInCategory="100"
-        app:showAsAction="always">
-</item>
-
+        app:showAsAction="always"
+        app:actionLayout="@layout/action_cart_layout"/>
 </menu>
