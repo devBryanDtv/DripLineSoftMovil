@@ -9,12 +9,14 @@ import com.example.driplinesoftapp.data.Menu
 import com.example.driplinesoftapp.databinding.ItemMenuBinding
 
 class MenuAdapter(
-    private val menus: List<Menu>,
+    private var menus: List<Menu>,
     private val idSucursal: Int,
     private val nombreSucursal: String?,
     private val nombreComercial: String?,
     private val logoCliente: String?
 ) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
+
+    private var menusOriginales: List<Menu> = menus.toList()
 
     inner class MenuViewHolder(val binding: ItemMenuBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -48,4 +50,10 @@ class MenuAdapter(
     }
 
     override fun getItemCount(): Int = menus.size
+
+    fun actualizarLista(nuevaLista: List<Menu>) {
+        menusOriginales = nuevaLista.toList()
+        menus = nuevaLista
+        notifyDataSetChanged()
+    }
 }

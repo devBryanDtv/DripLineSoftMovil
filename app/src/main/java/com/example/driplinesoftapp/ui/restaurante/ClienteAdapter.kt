@@ -66,16 +66,4 @@ class ClienteAdapter(private var clientes: List<Cliente>) :
         notifyDataSetChanged()
     }
 
-    fun filtrarClientes(consulta: String) {
-        clientes = if (consulta.isEmpty()) {
-            clientesOriginales
-        } else {
-            clientesOriginales.filter { cliente ->
-                cliente.nombreComercial.contains(consulta, ignoreCase = true) ||
-                        cliente.sector.contains(consulta, ignoreCase = true) ||
-                        cliente.estadoSuscripcion.contains(consulta, ignoreCase = true)
-            }
-        }
-        notifyDataSetChanged()
-    }
 }
