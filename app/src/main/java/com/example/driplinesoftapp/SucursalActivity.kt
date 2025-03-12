@@ -22,6 +22,7 @@ class SucursalActivity : AppCompatActivity() {
     private lateinit var adapter: SucursalAdapter
     private val idCliente: Int by lazy { intent.getIntExtra("ID_CLIENTE", -1) }
     private val logoCliente: String? by lazy { intent.getStringExtra("LOGO_CLIENTE") }
+    private val nombreComercial: String? by lazy { intent.getStringExtra("NOMBRE") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +82,7 @@ class SucursalActivity : AppCompatActivity() {
             binding.tvNoSucursales.mostrar()
         } else {
             binding.tvNoSucursales.ocultar()
-            adapter = SucursalAdapter(sucursales, logoCliente ?: "")
+            adapter = SucursalAdapter(sucursales, logoCliente ?: "",nombreComercial?:"no reconocido")
             binding.recyclerViewSucursales.adapter = adapter
         }
     }

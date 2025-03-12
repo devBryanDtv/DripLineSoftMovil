@@ -17,4 +17,6 @@
     <string name="nombre">Nombre</string>
     <string name="carrito">carrito</string>
     <string name="no_tienes_cuenta_reg_strate_aqu">¿No tienes cuenta? Regístrate aquí</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="confirmar_carrito">confirmar carrito</string>
 </resources>

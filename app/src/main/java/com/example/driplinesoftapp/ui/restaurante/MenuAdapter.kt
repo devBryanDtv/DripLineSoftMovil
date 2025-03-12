@@ -2,9 +2,7 @@ package com.example.driplinesoftapp.ui.restaurante
 
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.driplinesoftapp.ProductoActivity
 import com.example.driplinesoftapp.data.Menu
@@ -12,7 +10,10 @@ import com.example.driplinesoftapp.databinding.ItemMenuBinding
 
 class MenuAdapter(
     private val menus: List<Menu>,
-    private val onItemClick: ((Menu) -> Unit)? = null  // ✅ Se agrega el evento de clic opcional
+    private val idSucursal: Int,
+    private val nombreSucursal: String?,
+    private val nombreComercial: String?,
+    private val logoCliente: String?
 ) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
 
     inner class MenuViewHolder(val binding: ItemMenuBinding) :
@@ -35,6 +36,11 @@ class MenuAdapter(
             root.setOnClickListener {
                 val intent = Intent(root.context, ProductoActivity::class.java).apply {
                     putExtra("ID_MENU", menu.idMenu)
+                    putExtra("NOMBRE_MENU", menu.nombreMenu)
+                    putExtra("ID_SUCURSAL", idSucursal)
+                    putExtra("NOMBRE_SUCURSAL", nombreSucursal)
+                    putExtra("NOMBRE_COMERCIAL", nombreComercial)
+                    putExtra("LOGO_CLIENTE", logoCliente)
                 }
                 root.context.startActivity(intent)
             }

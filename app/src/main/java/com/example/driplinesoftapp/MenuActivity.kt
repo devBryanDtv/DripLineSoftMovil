@@ -18,13 +18,20 @@ class MenuActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMenuBinding
     private lateinit var adapter: MenuAdapter
     private var idSucursal: Int = -1
+    private var nombreSucursal: String? = null
+    private var nombreComercial: String? = null
+    private var logoCliente: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Recibir datos del Intent
         idSucursal = intent.getIntExtra("ID_SUCURSAL", -1)
+        nombreSucursal = intent.getStringExtra("NOMBRE_SUCURSAL")
+        nombreComercial = intent.getStringExtra("NOMBRE_COMERCIAL")
+        logoCliente = intent.getStringExtra("LOGO_CLIENTE")
 
         binding.recyclerViewMenus.layoutManager = LinearLayoutManager(this)
 
@@ -51,7 +58,13 @@ class MenuActivity : AppCompatActivity() {
                             binding.tvNoMenus.visibility = View.VISIBLE
                         } else {
                             binding.tvNoMenus.visibility = View.GONE
-                            adapter = MenuAdapter(menus)
+                            adapter = MenuAdapter(
+                                menus,
+                                idSucursal,
+                                nombreSucursal,
+                                nombreComercial,
+                                logoCliente
+                            )
                             binding.recyclerViewMenus.adapter = adapter
                         }
                     } else {

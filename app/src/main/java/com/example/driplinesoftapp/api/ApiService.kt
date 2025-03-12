@@ -1,6 +1,8 @@
 package com.example.driplinesoftapp.api
 
 import com.example.driplinesoftapp.data.ClienteResponse
+import com.example.driplinesoftapp.data.DatosNegocioResponse
+import com.example.driplinesoftapp.data.DatosPedidoRequest
 import com.example.driplinesoftapp.data.LoginRequest
 import com.example.driplinesoftapp.data.LoginResponse
 import com.example.driplinesoftapp.data.MenuResponse
@@ -55,5 +57,12 @@ interface ApiService {
 
     @GET("pedidos/historial/{id_usuario}")
     fun obtenerHistorialPedidos(@Path("id_usuario") idUsuario: Int): Call<PedidoResponse2>
+
+    @POST("obtener-datos-pedido")
+    fun obtenerDatosPedido(@Body requestBody: DatosPedidoRequest): Call<DatosNegocioResponse>
+
+
+
+
 
 }

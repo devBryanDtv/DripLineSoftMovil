@@ -17,26 +17,31 @@
         <activity
             android:name=".PedidoActivity"
             android:exported="false"
+            android:label="Pedido"
             android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
             />
         <activity
             android:name=".CarritoActivity"
             android:exported="false"
+            android:label="Carrito de compras"
             android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
             />
         <activity
             android:name=".ProductoActivity"
             android:exported="false"
+            android:label="Productos disponibles"
             android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
             />
         <activity
             android:name=".MenuActivity"
             android:exported="false"
+            android:label="Menus de la sucursal"
             android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"
             />
         <activity
             android:name=".SucursalActivity"
             android:exported="false"
+            android:label="Sucursales"
             android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar" />
         <activity
             android:name=".RegisterActivity"

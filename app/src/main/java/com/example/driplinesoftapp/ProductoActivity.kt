@@ -30,6 +30,13 @@ class ProductoActivity : AppCompatActivity() {
     private var idMenu: Int = -1
     private var idUsuario: Int = -1  // ID del usuario autenticado
 
+    // Nuevas variables para los datos adicionales
+    private var nombreMenu: String? = null
+    private var idSucursal: Int = -1
+    private var nombreSucursal: String? = null
+    private var nombreComercial: String? = null
+    private var logoCliente: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductoBinding.inflate(layoutInflater)
@@ -48,16 +55,30 @@ class ProductoActivity : AppCompatActivity() {
 
         idUsuario = usuario.idUsuario  // Asignar el ID del usuario autenticado
 
+        // Recibir los datos adicionales del intent
         idMenu = intent.getIntExtra("ID_MENU", -1)
+        nombreMenu = intent.getStringExtra("NOMBRE_MENU")
+        idSucursal = intent.getIntExtra("ID_SUCURSAL", -1)
+        nombreSucursal = intent.getStringExtra("NOMBRE_SUCURSAL")
+        nombreComercial = intent.getStringExtra("NOMBRE_COMERCIAL")
+        logoCliente = intent.getStringExtra("LOGO_CLIENTE")
+
         binding.recyclerViewProductos.layoutManager = LinearLayoutManager(this)
 
         // Inicializar el botón para confirmar selección
         btnConfirmarSeleccion = binding.btnConfirmarSeleccion
         btnConfirmarSeleccion.setOnClickListener {
             val productosCarrito = dbHelper.obtenerProductosPorUsuario(idUsuario)
-            val intent = Intent(this, CarritoActivity::class.java)
-            val productosJson = Gson().toJson(productosCarrito)
-            intent.putExtra("productos_carrito", productosJson)
+            val intent = Intent(this, CarritoActivity::class.java).apply {
+                val productosJson = Gson().toJson(productosCarrito)
+                putExtra("productos_carrito", productosJson)
+                putExtra("ID_MENU", idMenu)
+                putExtra("NOMBRE_MENU", nombreMenu)
+                putExtra("ID_SUCURSAL", idSucursal)
+                putExtra("NOMBRE_SUCURSAL", nombreSucursal)
+                putExtra("NOMBRE_COMERCIAL", nombreComercial)
+                putExtra("LOGO_CLIENTE", logoCliente)
+            }
             startActivity(intent)
         }
 

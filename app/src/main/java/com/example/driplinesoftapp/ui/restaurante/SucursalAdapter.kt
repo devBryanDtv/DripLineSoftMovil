@@ -12,7 +12,9 @@ import com.example.driplinesoftapp.MenuActivity
 
 class SucursalAdapter(
     private val sucursales: List<Sucursal>,
-    private val logoCliente: String // Se pasa el logo del cliente desde la actividad
+    private val logoCliente: String,
+    private val nombreComercial: String // Nombre comercial del cliente
+
 ) : RecyclerView.Adapter<SucursalAdapter.SucursalViewHolder>() {
 
     inner class SucursalViewHolder(val binding: ItemSucursalBinding) :
@@ -43,6 +45,9 @@ class SucursalAdapter(
             root.setOnClickListener {
                 val intent = Intent(root.context, MenuActivity::class.java).apply {
                     putExtra("ID_SUCURSAL", sucursal.idSucursal)
+                    putExtra("LOGO_CLIENTE", logoCliente)
+                    putExtra("NOMBRE_SUCURSAL", sucursal.nombreSucursal)
+                    putExtra("NOMBRE_COMERCIAL", nombreComercial)
                 }
                 root.context.startActivity(intent)
             }

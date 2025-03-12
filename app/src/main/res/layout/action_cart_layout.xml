@@ -8,6 +8,9 @@
         android:id="@+id/ivCartIcon"
         android:layout_width="26dp"
         android:layout_height="26dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
         android:src="@drawable/ic_carrito"
         android:layout_gravity="center"/>
 

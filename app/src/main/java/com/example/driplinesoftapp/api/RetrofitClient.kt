@@ -5,8 +5,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "https://58de-200-56-95-130.ngrok-free.app/api/mobile/"
-    const val BASE_URL_IMAGENES = "https://58de-200-56-95-130.ngrok-free.app/storage/"
+    private const val BASE_URL = "https://7133-200-56-95-130.ngrok-free.app/api/mobile/"
+    const val BASE_URL_IMAGENES = "https://7133-200-56-95-130.ngrok-free.app/storage/"
 
     val gson = GsonBuilder().setLenient().create()
 
