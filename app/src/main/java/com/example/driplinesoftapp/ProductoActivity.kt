@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.driplinesoftapp.api.RetrofitClient
 import com.example.driplinesoftapp.data.Producto
@@ -26,9 +27,11 @@ class ProductoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProductoBinding
     private lateinit var dbHelper: CarritoDatabaseHelper
     private lateinit var sessionManager: SessionManager
+    private lateinit var adapter: ProductoAdapter
     private lateinit var btnConfirmarSeleccion: Button
+
     private var idMenu: Int = -1
-    private var idUsuario: Int = -1  // ID del usuario autenticado
+    private var idUsuario: Int = -1
 
     // Nuevas variables para los datos adicionales
     private var nombreMenu: String? = null
@@ -36,6 +39,7 @@ class ProductoActivity : AppCompatActivity() {
     private var nombreSucursal: String? = null
     private var nombreComercial: String? = null
     private var logoCliente: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +49,6 @@ class ProductoActivity : AppCompatActivity() {
         dbHelper = CarritoDatabaseHelper(this)
         sessionManager = SessionManager(this)
 
-        // Obtener el usuario autenticado
         val usuario = sessionManager.getUser()
         if (usuario == null) {
             Toast.makeText(this, "Error: No hay usuario autenticado", Toast.LENGTH_SHORT).show()
@@ -53,7 +56,7 @@ class ProductoActivity : AppCompatActivity() {
             return
         }
 
-        idUsuario = usuario.idUsuario  // Asignar el ID del usuario autenticado
+        idUsuario = usuario.idUsuario
 
         // Recibir los datos adicionales del intent
         idMenu = intent.getIntExtra("ID_MENU", -1)
@@ -82,16 +85,24 @@ class ProductoActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Verificar la cantidad de productos en el carrito al cargar
-        verificarCantidadCarrito()
 
-        // Cargar los productos del menú
-        if (idMenu != -1) {
-            cargarProductos(idMenu)
-        } else {
-            Toast.makeText(this, "Error al obtener el menú", Toast.LENGTH_SHORT).show()
-            finish()
-        }
+        verificarCantidadCarrito()
+        configurarSearchView()
+        cargarProductos(idMenu)
+    }
+
+    private fun configurarSearchView() {
+        binding.searchViewProductos.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                adapter.filtrarProductos(query.orEmpty().trim())
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filtrarProductos(newText.orEmpty().trim())
+                return true
+            }
+        })
     }
 
     private fun cargarProductos(idMenu: Int) {
@@ -108,10 +119,9 @@ class ProductoActivity : AppCompatActivity() {
                             binding.tvNoProductos.visibility = View.VISIBLE
                         } else {
                             binding.tvNoProductos.visibility = View.GONE
-                            val adapter = ProductoAdapter(productos, dbHelper, sessionManager, ::agregarProductoAlCarrito) {
+                            adapter = ProductoAdapter(productos, dbHelper, sessionManager, ::agregarProductoAlCarrito) {
                                 actualizarCantidadCarrito()
                             }
-
                             binding.recyclerViewProductos.adapter = adapter
                         }
                     } else {
@@ -157,15 +167,11 @@ class ProductoActivity : AppCompatActivity() {
             val nuevaCantidad = productoExistente.cantidad + 1
             val productoCarrito = ProductoCarrito(idProducto = producto.idProducto, cantidad = nuevaCantidad)
             dbHelper.actualizarCantidad(idUsuario, productoCarrito)
-
-            Log.d("ProductoActivity", "Cantidad actualizada para el producto ${producto.nombreProducto}")
         } else {
             dbHelper.agregarProducto(idUsuario, producto.idProducto, 1)
-            Log.d("ProductoActivity", "Producto agregado al carrito: ${producto.nombreProducto}")
         }
 
-        (binding.recyclerViewProductos.adapter as? ProductoAdapter)?.actualizarProducto(producto)
-
+        adapter.actualizarProducto(producto)
         actualizarCantidadCarrito()
     }
 }

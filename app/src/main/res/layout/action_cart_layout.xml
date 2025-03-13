@@ -1,9 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:background="@drawable/cuerpo_circulo"
+    android:layout_marginStart="30dp"
+    android:layout_gravity="start"
+    android:gravity="center">  <!-- Asegurar que el contenido esté centrado -->
 
-    <!-- Ícono del carrito (Ligeramente más grande) -->
+    <!-- Ícono del Carrito -->
     <ImageView
         android:id="@+id/ivCartIcon"
         android:layout_width="26dp"
@@ -12,9 +16,10 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_carrito"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        />
 
-    <!-- Contador del carrito (Ajustado en tamaño y mejor alineado) -->
+    <!-- Contador del Carrito -->
     <TextView
         android:id="@+id/tvCartCount"
         android:layout_width="wrap_content"
@@ -27,8 +32,8 @@
         android:minWidth="20dp"
         android:minHeight="20dp"
         android:gravity="center"
-        android:layout_gravity="top|end"
+        android:layout_gravity="center|end"
         android:translationX="-5dp"
-        android:translationY="-5dp"
+        android:translationY="-10dp"
         android:visibility="gone"/>
 </FrameLayout>

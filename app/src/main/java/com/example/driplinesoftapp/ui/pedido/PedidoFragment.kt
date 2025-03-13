@@ -21,16 +21,29 @@ class PedidoFragment : Fragment() {
     private lateinit var pedidoViewModel: PedidoViewModel
     private lateinit var pedidoAdapter: PedidoAdapter
     private var listaPedidosOriginal: List<Pedido> = emptyList()
+    private var pedidoIdResaltar: Int? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentPedidoBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
         pedidoViewModel = ViewModelProvider(this).get(PedidoViewModel::class.java)
+
+
+
+        // Recibir el pedido a resaltar desde el Intent
+        pedidoIdResaltar = arguments?.getInt("resaltarPedidoId", -1)
+
+        pedidoViewModel.pedidos.observe(viewLifecycleOwner) { pedidos ->
+
+            listaPedidosOriginal = pedidos
+            filtrarPedidos()
+
+        }
 
         pedidoAdapter = PedidoAdapter(emptyList()) { activarSearchView() }
         binding.recyclerViewPedidos.apply {
@@ -112,6 +125,15 @@ class PedidoFragment : Fragment() {
             else -> null
         }
 
+        // Si tenemos un pedido resaltado y está pendiente, cambiamos el TabLayout a "Pendiente"
+        pedidoIdResaltar?.let {
+            // Si el pedido está en "pendiente" y es el que se resalta, cambiamos a la pestaña "pendiente"
+            if (estadoFiltro != "pendiente") {
+                binding.tabLayoutEstados.getTabAt(1)?.select() // Esto selecciona la pestaña de "pendiente" (índice 1)
+            }
+        }
+
+        // Filtrar los pedidos en función del estado y la búsqueda
         val listaFiltrada = listaPedidosOriginal.filter { pedido ->
             val coincideEstado = estadoFiltro == null || pedido.estado.equals(estadoFiltro, true)
             val coincideTexto = query.isNullOrEmpty() ||
@@ -120,6 +142,7 @@ class PedidoFragment : Fragment() {
                     pedido.fechaPedido.contains(query, ignoreCase = true) ||
                     pedido.metodoPago.contains(query, ignoreCase = true) ||
                     pedido.estado.contains(query, ignoreCase = true) ||
+                    pedido.tiempoEntregaEstimado.toString().contains(query.trim()) ||
                     (pedido.nota?.contains(query, ignoreCase = true) ?: false) ||
                     pedido.detalles.any { detalle ->
                         detalle.nombreProducto.contains(query, ignoreCase = true) ||
@@ -130,12 +153,30 @@ class PedidoFragment : Fragment() {
             coincideEstado && coincideTexto
         }
 
+        // Actualizar la lista de pedidos filtrados
         pedidoAdapter.actualizarLista(listaFiltrada)
         binding.tvNoPedidos.visibility = if (listaFiltrada.isEmpty()) View.VISIBLE else View.GONE
     }
 
+
+    private fun resaltarPedido(pedidoId: Int) {
+        pedidoAdapter.resaltarPedido(pedidoId)
+        // 🛑 Llamar a la función del Adapter para hacer scroll al pedido resaltado
+        binding.recyclerViewPedidos.post {
+            pedidoAdapter.scrollToHighlightedPosition(binding.recyclerViewPedidos)
+        }
+    }
+
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // ✅ Asegurar que el pedido se resalte después de que todo cargue
+        pedidoIdResaltar?.takeIf { it != -1 }?.let { resaltarPedido(it) }
     }
 }

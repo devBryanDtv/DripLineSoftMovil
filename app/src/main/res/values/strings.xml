@@ -19,4 +19,6 @@
     <string name="no_tienes_cuenta_reg_strate_aqu">¿No tienes cuenta? Regístrate aquí</string>
     <string name="confirmar">Confirmar</string>
     <string name="confirmar_carrito">confirmar carrito</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -13,41 +13,58 @@
         android:padding="16dp"
         android:orientation="vertical">
 
-        <TextView android:id="@+id/tvNombreComercial"
+        <TextView
+            android:id="@+id/tvTiempoEntrega"
+            android:text="Tiempo de Entrega: 30 min"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@android:color/holo_blue_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvNombreComercial"
             android:text="Nombre Comercial"
             android:textStyle="bold"
             android:textSize="18sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <TextView android:id="@+id/tvNombreSucursal"
+        <TextView
+            android:id="@+id/tvNombreSucursal"
             android:text="Sucursal"
             android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <TextView android:id="@+id/tvFechaPedido"
+        <TextView
+            android:id="@+id/tvFechaPedido"
             android:text="Fecha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <TextView android:id="@+id/tvMetodoPago"
+        <TextView
+            android:id="@+id/tvMetodoPago"
             android:text="Método de Pago"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <TextView android:id="@+id/tvEstadoPedido"
+        <TextView
+            android:id="@+id/tvEstadoPedido"
             android:text="Estado"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <TextView android:id="@+id/tvTotalPedido"
+        <TextView
+            android:id="@+id/tvTotalPedido"
             android:text="Total"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <TextView android:id="@+id/tvDetallesPedido"
+        <TextView
+            android:id="@+id/tvDetallesPedido"
             android:text="Detalles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

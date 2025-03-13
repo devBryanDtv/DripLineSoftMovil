@@ -1,11 +1,13 @@
 package com.example.driplinesoftapp.api
 
+import com.example.driplinesoftapp.data.CambiarContrasenaRequest
 import com.example.driplinesoftapp.data.ClienteResponse
 import com.example.driplinesoftapp.data.DatosNegocioResponse
 import com.example.driplinesoftapp.data.DatosPedidoRequest
 import com.example.driplinesoftapp.data.LoginRequest
 import com.example.driplinesoftapp.data.LoginResponse
 import com.example.driplinesoftapp.data.MenuResponse
+import com.example.driplinesoftapp.data.PassResponse
 import com.example.driplinesoftapp.data.Pedido
 import com.example.driplinesoftapp.data.PedidoRequest
 import com.example.driplinesoftapp.data.PedidoResponse
@@ -62,7 +64,8 @@ interface ApiService {
     fun obtenerDatosPedido(@Body requestBody: DatosPedidoRequest): Call<DatosNegocioResponse>
 
 
-
+    @POST("cambiar-contrasena")
+    fun cambiarContrasena(@Body request: CambiarContrasenaRequest): Call<PassResponse>
 
 
 }

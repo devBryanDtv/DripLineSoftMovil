@@ -15,12 +15,14 @@ import com.example.driplinesoftapp.databinding.ItemProductoBinding
 import com.example.driplinesoftapp.utils.SessionManager
 
 class ProductoAdapter(
-    private val productos: MutableList<Producto>,
+    private var productos: MutableList<Producto>,
     private val dbHelper: CarritoDatabaseHelper,
     private val sessionManager: SessionManager,  // 🔹 Ahora pasamos SessionManager al constructor
     private val onAddToCart: (Producto) -> Unit,
     private val onUpdate: () -> Unit
 ) : RecyclerView.Adapter<ProductoAdapter.ProductoViewHolder>() {
+
+    private val productosOriginales: MutableList<Producto> = productos.toMutableList()
 
     inner class ProductoViewHolder(val binding: ItemProductoBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -115,4 +117,16 @@ class ProductoAdapter(
             notifyItemChanged(index)
         }
     }
+
+    fun filtrarProductos(query: String) {
+        productos = if (query.isEmpty()) {
+            productosOriginales.toMutableList()
+        } else {
+            productosOriginales.filter {
+                it.nombreProducto.contains(query, ignoreCase = true)
+            }.toMutableList()
+        }
+        notifyDataSetChanged()
+    }
+
 }

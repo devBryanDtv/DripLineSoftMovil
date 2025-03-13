@@ -1,14 +1,18 @@
 package com.example.driplinesoftapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AlertDialog
+import com.airbnb.lottie.LottieAnimationView
 import com.example.driplinesoftapp.api.RetrofitClient
+import com.example.driplinesoftapp.data.PedidoData
 import com.example.driplinesoftapp.data.PedidoRequest
 import com.example.driplinesoftapp.data.PedidoResponse
 import com.example.driplinesoftapp.data.ProductoCarrito
@@ -18,6 +22,11 @@ import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.animation.Animator
+import android.view.View
+import android.widget.ImageView
+import com.airbnb.lottie.LottieDrawable
+
 
 class PedidoActivity : AppCompatActivity() {
 
@@ -136,8 +145,10 @@ class PedidoActivity : AppCompatActivity() {
             .enqueue(object : Callback<PedidoResponse> {
                 override fun onResponse(call: Call<PedidoResponse>, response: Response<PedidoResponse>) {
                     if (response.isSuccessful && response.body()?.success == true) {
-                        Log.d("PedidoActivity", "Pedido creado con éxito: ${response.body()}")
-                        Toast.makeText(this@PedidoActivity, "Pedido realizado con éxito", Toast.LENGTH_SHORT).show()
+                        val pedido = response.body()?.data
+
+                        // ✅ Mostrar animación y AlertDialog con los detalles del pedido
+                        mostrarDialogoExito(pedido)
                     } else {
                         val errorMessage = response.body()?.message ?: "Error desconocido"
                         Log.e("PedidoActivity", "Error al realizar el pedido: $errorMessage")
@@ -151,4 +162,62 @@ class PedidoActivity : AppCompatActivity() {
                 }
             })
     }
+    private fun mostrarDialogoExito(pedido: PedidoData?) {
+        if (pedido == null) return
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_pedido_exito, null)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+
+        // 🔹 Obtener las vistas
+        val animationView: LottieAnimationView = dialogView.findViewById(R.id.lottieSuccess)
+        val imgPlaceholder: ImageView = dialogView.findViewById(R.id.imgCheckPlaceholder) // 🔹 Nueva imagen fija
+
+        // 🔹 Configurar el Placeholder de la palomita (inicialmente oculto)
+        imgPlaceholder.visibility = View.INVISIBLE
+
+        // 🔹 Configurar la animación
+        animationView.setAnimation(R.raw.success)
+        animationView.repeatCount = 0
+        animationView.playAnimation()
+
+        // 🔹 Listener para pausar antes del final y mostrar la imagen estática
+        animationView.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {}
+
+            override fun onAnimationEnd(animation: Animator) {
+                animationView.visibility = View.GONE  // Ocultar animación
+                imgPlaceholder.visibility = View.GONE // Mostrar la imagen de la palomita
+            }
+
+            override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationRepeat(animation: Animator) {}
+        })
+
+        val tvPedidoId: TextView = dialogView.findViewById(R.id.tvPedidoId)
+        val tvTotal: TextView = dialogView.findViewById(R.id.tvTotal)
+        val tvTiempoEntrega: TextView = dialogView.findViewById(R.id.tvTiempoEntrega)
+        val btnAceptar: Button = dialogView.findViewById(R.id.btnAceptar)
+
+        tvPedidoId.text = "Pedido #${pedido.id_pedido}"
+        tvTotal.text = "Total: $${pedido.total}"
+        tvTiempoEntrega.text = "Tiempo estimado: ${pedido.tiempo_entrega_estimado} min"
+
+        btnAceptar.setOnClickListener {
+            dialog.dismiss()
+            // ✅ Navegar a PedidoFragment y resaltar el pedido pendiente
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("resaltarPedidoId", pedido.id_pedido)
+            intent.putExtra("estado", "pendiente")
+            startActivity(intent)
+        }
+
+        dialog.show()
+    }
+
+
+
 }

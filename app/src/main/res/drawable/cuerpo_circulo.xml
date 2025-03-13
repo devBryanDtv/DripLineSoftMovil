@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Sombra (para efecto 3D) -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#1A000000"/> <!-- Sombra semitransparente -->
+            <size android:width="44dp" android:height="44dp"/>
+        </shape>
+    </item>
+
+    <!-- Círculo principal (efecto brillante/3D) -->
+    <item android:top="2dp" android:left="2dp">
+        <shape android:shape="oval">
+            <gradient
+                android:startColor="#1976D2"
+            android:endColor="#42A5F5"
+                android:angle="270" />
+            <size android:width="40dp" android:height="40dp"/>
+            <corners android:radius="20dp"/>
+        </shape>
+    </item>
+
+    <!-- Brillo superior para efecto de luz -->
+    <item android:top="2dp" android:left="2dp">
+        <shape android:shape="oval">
+            <gradient
+                android:startColor="#66FFFFFF"
+                android:endColor="#00FFFFFF"
+                android:angle="270" />
+            <size android:width="40dp" android:height="40dp"/>
+            <corners android:radius="20dp"/>
+        </shape>
+    </item>
+</layer-list>
