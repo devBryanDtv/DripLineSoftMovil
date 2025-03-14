@@ -20,6 +20,8 @@ import com.example.driplinesoftapp.data.ProductoResponse_2
 import com.example.driplinesoftapp.data.RegisterRequest
 import com.example.driplinesoftapp.data.RegisterResponse
 import com.example.driplinesoftapp.data.SucursalResponse
+import com.example.driplinesoftapp.data_negocio.CantidadPedidosResponse
+import com.example.driplinesoftapp.data_negocio.EstadisticasClienteResponse
 import com.example.driplinesoftapp.data_negocio.PedidoNegocioResponse
 import com.example.driplinesoftapp.data_negocio.SucursalToggleResponse
 import com.example.driplinesoftapp.data_negocio.UsuarioAsociadoResponse
@@ -86,7 +88,15 @@ interface ApiService {
         @Path("id_sucursal") idSucursal: Int
     ): Call<SucursalToggleResponse>
 
+    @GET("estadisticas/cliente/{id_usuario}")
+    fun obtenerEstadisticasCliente(
+        @Path("id_usuario") idUsuario: Int
+    ): Call<EstadisticasClienteResponse>
 
+    @GET("estadisticas/pedidos/{id_usuario}")
+    fun obtenerCantidadPedidosUsuario(
+        @Path("id_usuario") idUsuario: Int
+    ): Call<CantidadPedidosResponse>
 
 
 

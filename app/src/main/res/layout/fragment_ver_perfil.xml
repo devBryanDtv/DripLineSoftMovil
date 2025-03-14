@@ -7,9 +7,10 @@
     android:paddingTop="?attr/actionBarSize"
     android:padding="24dp">
 
-    <!-- CardView Amplificado -->
+    <!-- CardView Información del Usuario -->
     <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
+        android:id="@+id/cardInformacionUsuario"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
@@ -26,7 +27,6 @@
             android:orientation="vertical"
             android:padding="12dp">
 
-            <!-- Nombre de Usuario -->
             <TextView
                 android:id="@+id/tvNombreUsuario"
                 android:layout_width="wrap_content"
@@ -37,7 +37,6 @@
                 android:textColor="@android:color/black"
                 android:layout_marginBottom="12dp"/>
 
-            <!-- Email -->
             <TextView
                 android:id="@+id/tvEmailUsuario"
                 android:layout_width="wrap_content"
@@ -47,7 +46,6 @@
                 android:textColor="@android:color/darker_gray"
                 android:layout_marginBottom="8dp"/>
 
-            <!-- Fecha de Creación -->
             <TextView
                 android:id="@+id/tvFechaCreacion"
                 android:layout_width="wrap_content"
@@ -58,6 +56,76 @@
                 android:layout_marginBottom="8dp"/>
         </LinearLayout>
 
+    </androidx.cardview.widget.CardView>
+
+    <!-- CardView Cantidad de Pedidos -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardPedidos"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardInformacionUsuario">
+
+        <TextView
+            android:id="@+id/tvCantidadPedidos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pedidos realizados: 0"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- CardView Información del Negocio -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardInformacionNegocio"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/cardPedidos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvCantidadSucursales"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sucursales: 0"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvCantidadMenus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Menús: 0"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvCantidadProductos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Productos: 0"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginBottom="8dp"/>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
