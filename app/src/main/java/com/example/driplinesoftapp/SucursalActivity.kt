@@ -12,7 +12,7 @@ import com.example.driplinesoftapp.api.RetrofitClient
 import com.example.driplinesoftapp.data.Sucursal
 import com.example.driplinesoftapp.data.SucursalResponse
 import com.example.driplinesoftapp.databinding.ActivitySucursalBinding
-import com.example.driplinesoftapp.ui.sucursal.SucursalAdapter
+import com.example.driplinesoftapp.ui.restaurante.SucursalAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -125,14 +125,6 @@ class PedidoFragment : Fragment() {
             else -> null
         }
 
-        // Si tenemos un pedido resaltado y está pendiente, cambiamos el TabLayout a "Pendiente"
-        pedidoIdResaltar?.let {
-            // Si el pedido está en "pendiente" y es el que se resalta, cambiamos a la pestaña "pendiente"
-            if (estadoFiltro != "pendiente") {
-                binding.tabLayoutEstados.getTabAt(1)?.select() // Esto selecciona la pestaña de "pendiente" (índice 1)
-            }
-        }
-
         // Filtrar los pedidos en función del estado y la búsqueda
         val listaFiltrada = listaPedidosOriginal.filter { pedido ->
             val coincideEstado = estadoFiltro == null || pedido.estado.equals(estadoFiltro, true)
@@ -159,15 +151,6 @@ class PedidoFragment : Fragment() {
     }
 
 
-    private fun resaltarPedido(pedidoId: Int) {
-        pedidoAdapter.resaltarPedido(pedidoId)
-        // 🛑 Llamar a la función del Adapter para hacer scroll al pedido resaltado
-        binding.recyclerViewPedidos.post {
-            pedidoAdapter.scrollToHighlightedPosition(binding.recyclerViewPedidos)
-        }
-    }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -176,7 +159,5 @@ class PedidoFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // ✅ Asegurar que el pedido se resalte después de que todo cargue
-        pedidoIdResaltar?.takeIf { it != -1 }?.let { resaltarPedido(it) }
     }
 }

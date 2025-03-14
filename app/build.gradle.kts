@@ -57,6 +57,8 @@ dependencies {
 
     // Glide para carga de imágenes
     implementation(libs.glide)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.fragment.ktx)
     annotationProcessor(libs.glide.compiler)
 
     // DataStore para manejo de preferencias del usuario

@@ -39,7 +39,8 @@ class SessionManager(context: Context) {
             email = prefs.getString(KEY_EMAIL, "") ?: "",
             contraseña = "", // No guardamos la contraseña por seguridad
             rol = prefs.getString(KEY_ROL, "") ?: "",
-            fechaCreacion = prefs.getString(KEY_FECHA_CREACION, "") ?: ""
+            fechaCreacion = prefs.getString(KEY_FECHA_CREACION, "") ?: "",
+            pivot = null
         )
     }
 

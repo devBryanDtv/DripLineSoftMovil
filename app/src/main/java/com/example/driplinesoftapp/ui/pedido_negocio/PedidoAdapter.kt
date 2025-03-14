@@ -1,4 +1,4 @@
-package com.example.driplinesoftapp.ui.pedido
+package com.example.driplinesoftapp.ui.pedido_negocio
 
 import android.text.Html
 import android.view.LayoutInflater
@@ -6,16 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.driplinesoftapp.R
-import com.example.driplinesoftapp.data.Pedido
+import com.example.driplinesoftapp.data_negocio.PedidoNegocio
 import com.example.driplinesoftapp.databinding.ItemPedidoBinding
 
-class PedidoAdapter(
-    private var pedidos: List<Pedido>,
+class PedidoNegocioAdapter(
+    private var pedidos: List<PedidoNegocio>,
     private var pedidoIdResaltado: Int? = null,
-    private val onCardClick: () -> Unit
-) : RecyclerView.Adapter<PedidoAdapter.PedidoViewHolder>() {
+    private val onCardClick: (PedidoNegocio) -> Unit
+) : RecyclerView.Adapter<PedidoNegocioAdapter.PedidoViewHolder>() {
 
-    private var pedidosOriginales: List<Pedido> = pedidos.toList()
+    private var pedidosOriginales: List<PedidoNegocio> = pedidos.toList()
 
     inner class PedidoViewHolder(val binding: ItemPedidoBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -65,14 +65,14 @@ class PedidoAdapter(
 
             // Activar SearchView al presionar el CardView
             root.setOnClickListener {
-                onCardClick()
+                onCardClick(pedido)
             }
         }
     }
 
     override fun getItemCount(): Int = pedidos.size
 
-    fun actualizarLista(nuevaLista: List<Pedido>) {
+    fun actualizarLista(nuevaLista: List<PedidoNegocio>) {
         pedidosOriginales = nuevaLista.toList()
         pedidos = nuevaLista
         notifyDataSetChanged()

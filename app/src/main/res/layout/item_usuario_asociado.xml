@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="8dp"
+    android:layout_margin="8dp"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp">
+
+        <!-- Foto Circular -->
+        <ImageView
+            android:id="@+id/ivUsuarioFoto"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_photo"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_circular"
+            android:contentDescription="Foto de usuario"
+            android:layout_marginEnd="12dp"/>
+
+        <!-- Contenedor de Datos -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvNombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:drawableStart="@drawable/ic_user"
+                android:drawablePadding="8dp"/>
+
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Correo"
+                android:textSize="16sp"
+                android:textColor="#666666"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="8dp"/>
+
+            <TextView
+                android:id="@+id/tvFechaClienteDesde"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cliente desde"
+                android:textSize="14sp"
+                android:textColor="#888888"
+                android:drawableStart="@drawable/ic_calendar"
+                android:drawablePadding="8dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

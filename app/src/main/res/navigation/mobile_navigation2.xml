@@ -17,9 +17,43 @@
         android:label="@string/title_sucursal"
         tools:layout="@layout/fragment_sucursales_negocio" />
 
+    <!-- Sección de Pedidos -->
+    <fragment
+        android:id="@+id/navigation_pedidos_negocio"
+        android:name="com.example.driplinesoftapp.ui.pedido_negocio.PedidoNegocioFragment"
+        android:label="@string/title_pedidos"
+        tools:layout="@layout/fragment_pedido_negocio" />
+
     <fragment
         android:id="@+id/navigation_perfil_negocio"
         android:name="com.example.driplinesoftapp.ui.perfil_negocio.PerfilNegocioFragment"
         android:label="@string/title_perfil_negocio"
-        tools:layout="@layout/fragment_perfil_negocio" />
+        tools:layout="@layout/fragment_perfil_negocio">
+
+        <action
+            android:id="@+id/action_perfilNegocioFragment_to_verPerfilNegocioFragment"
+            app:destination="@id/verPerfilFragment" />
+
+        <action
+            android:id="@+id/action_perfilNegocioFragment_to_cambiarContrasenaNegocioFragment"
+            app:destination="@id/cambiarContrasenaFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_acerca_de"
+        android:name="com.example.driplinesoftapp.ui.perfil.AcercaDeFragment"
+        android:label="Acerca de"
+        tools:layout="@layout/fragment_acerca_de" />
+
+    <fragment
+        android:id="@+id/verPerfilFragment"
+        android:name="com.example.driplinesoftapp.ui.perfil.VerPerfilFragment"
+        android:label="Ver Perfil"
+        tools:layout="@layout/fragment_ver_perfil" />
+
+    <fragment
+        android:id="@+id/cambiarContrasenaFragment"
+        android:name="com.example.driplinesoftapp.ui.perfil.CambiarContrasenaFragment"
+        android:label="Cambiar Contraseña"
+        tools:layout="@layout/fragment_cambiar_contrasena" />
 </navigation>

@@ -20,11 +20,17 @@ import com.example.driplinesoftapp.data.ProductoResponse_2
 import com.example.driplinesoftapp.data.RegisterRequest
 import com.example.driplinesoftapp.data.RegisterResponse
 import com.example.driplinesoftapp.data.SucursalResponse
+import com.example.driplinesoftapp.data_negocio.PedidoNegocioResponse
+import com.example.driplinesoftapp.data_negocio.SucursalToggleResponse
+import com.example.driplinesoftapp.data_negocio.UsuarioAsociadoResponse
+import com.example.driplinesoftapp.models.Usuario
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @POST("login")
@@ -60,12 +66,28 @@ interface ApiService {
     @GET("pedidos/historial/{id_usuario}")
     fun obtenerHistorialPedidos(@Path("id_usuario") idUsuario: Int): Call<PedidoResponse2>
 
+    @GET("negocio/{id_usuario}/historial-pedidos")
+    fun obtenerHistorialPedidosNegocio(@Path("id_usuario") idUsuario: Int): Call<PedidoNegocioResponse>
+
     @POST("obtener-datos-pedido")
     fun obtenerDatosPedido(@Body requestBody: DatosPedidoRequest): Call<DatosNegocioResponse>
 
 
     @POST("cambiar-contrasena")
     fun cambiarContrasena(@Body request: CambiarContrasenaRequest): Call<PassResponse>
+
+    @GET("clientes/{id_cliente}/usuarios")
+    fun obtenerUsuariosPorCliente(
+        @Path("id_cliente") idCliente: Int  // 🔹 Corrección: ahora usa @Path
+    ): Call<UsuarioAsociadoResponse>  // Ahora devuelve un objeto que contiene 'success' y 'data'
+
+    @POST("sucursales/{id_sucursal}/toggle")
+    fun toggleSucursal(
+        @Path("id_sucursal") idSucursal: Int
+    ): Call<SucursalToggleResponse>
+
+
+
 
 
 }

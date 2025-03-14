@@ -13,6 +13,17 @@
         android:padding="16dp"
         android:orientation="vertical">
 
+        <!-- Número de Pedido en Grande -->
+        <TextView
+            android:id="@+id/tvNumeroPedido"
+            android:text="Pedido #0001"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+
         <TextView
             android:id="@+id/tvTiempoEntrega"
             android:text="Tiempo de Entrega: 30 min"

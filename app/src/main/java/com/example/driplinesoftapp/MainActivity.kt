@@ -28,21 +28,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Obtener el ID del pedido y el estado enviados desde PedidoActivity
-        var resaltarPedidoId = intent.getIntExtra("resaltarPedidoId", -1)
-        val estadoPedido = intent.getStringExtra("estado")
-
-        // Si hay un pedido a resaltar, pásalo al fragmento PedidoFragment
-        if (resaltarPedidoId != -1 && estadoPedido == "pendiente") {
-            val bundle = Bundle().apply {
-                putInt("resaltarPedidoId", resaltarPedidoId)
-            }
-            val navController = findNavController(R.id.nav_host_fragment_activity_main)
-            navController.navigate(R.id.navigation_pedido, bundle)
-            resaltarPedidoId = 0
-        }
-
-
         // Inicializar base de datos
         carritoDb = CarritoDatabaseHelper(this)
 
