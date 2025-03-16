@@ -1,9 +1,10 @@
 package com.example.driplinesoftapp.ui.restaurante
 
+import android.text.Html
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.driplinesoftapp.R
@@ -13,11 +14,12 @@ import com.example.driplinesoftapp.data.Producto
 import com.example.driplinesoftapp.data.ProductoCarrito
 import com.example.driplinesoftapp.databinding.ItemProductoBinding
 import com.example.driplinesoftapp.utils.SessionManager
+import com.google.android.material.snackbar.Snackbar
 
 class ProductoAdapter(
     private var productos: MutableList<Producto>,
     private val dbHelper: CarritoDatabaseHelper,
-    private val sessionManager: SessionManager,  // 🔹 Ahora pasamos SessionManager al constructor
+    private val sessionManager: SessionManager,
     private val onAddToCart: (Producto) -> Unit,
     private val onUpdate: () -> Unit
 ) : RecyclerView.Adapter<ProductoAdapter.ProductoViewHolder>() {
@@ -34,14 +36,13 @@ class ProductoAdapter(
     override fun onBindViewHolder(holder: ProductoViewHolder, position: Int) {
         val producto = productos[position]
 
-        // 🔹 Obtener el ID del usuario autenticado
         val idUsuario = sessionManager.getUser()?.idUsuario ?: -1
         val productoCarrito = dbHelper.obtenerProductoPorId(idUsuario, producto.idProducto)
 
         with(holder.binding) {
-            tvNombreProducto.text = producto.nombreProducto
-            tvDescripcion.text = producto.descripcion ?: "Sin descripción"
-            tvPrecio.text = "Precio: $${producto.precio}"
+            tvNombreProducto.text = Html.fromHtml("<b>${producto.nombreProducto}</b>")
+            tvDescripcion.text = Html.fromHtml("<i>${producto.descripcion ?: "Sin descripción"}</i>")
+            tvPrecio.text = Html.fromHtml("<b>Precio:</b> $${producto.precio}")
 
             // 🔹 Cargar imagen correctamente
             if (!producto.imagenes.isNullOrEmpty()) {
@@ -55,7 +56,6 @@ class ProductoAdapter(
                 ivImagenProducto.setImageResource(R.drawable.ic_logo)
             }
 
-            // 🔹 Mostrar controles de cantidad si el producto está en el carrito
             if (productoCarrito == null) {
                 btnAgregarCarrito.visibility = View.VISIBLE
                 layoutControlesCantidad.visibility = View.GONE
@@ -65,16 +65,15 @@ class ProductoAdapter(
                 tvCantidad.text = productoCarrito.cantidad.toString()
             }
 
-            // ➤ AGREGAR PRODUCTO
             btnAgregarCarrito.setOnClickListener {
                 onAddToCart(producto)
                 productos[position] = producto.copy(cantidad = 1)
-                notifyItemChanged(position) // 🔹 Actualizar la vista inmediatamente
-                Toast.makeText(root.context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
+                notifyItemChanged(position)
+
+                Snackbar.make(root, "✅ Producto agregado al carrito", Snackbar.LENGTH_SHORT).show()
                 onUpdate()
             }
 
-            // ➤ SUMAR PRODUCTO
             btnSumar.setOnClickListener {
                 val cantidadActual = dbHelper.obtenerProductoPorId(idUsuario, producto.idProducto)?.cantidad ?: 0
                 val nuevaCantidad = cantidadActual + 1
@@ -82,10 +81,11 @@ class ProductoAdapter(
 
                 dbHelper.actualizarCantidad(idUsuario, productoCarritoActualizado)
                 tvCantidad.text = nuevaCantidad.toString()
+
+                Snackbar.make(root, "➕ Cantidad actualizada", Snackbar.LENGTH_SHORT).show()
                 onUpdate()
             }
 
-            // ➤ RESTAR PRODUCTO
             btnRestar.setOnClickListener {
                 val cantidadActual = dbHelper.obtenerProductoPorId(idUsuario, producto.idProducto)?.cantidad ?: 0
                 if (cantidadActual > 1) {
@@ -94,10 +94,13 @@ class ProductoAdapter(
 
                     dbHelper.actualizarCantidad(idUsuario, productoCarritoActualizado)
                     tvCantidad.text = nuevaCantidad.toString()
+
+                    Snackbar.make(root, "➖ Cantidad actualizada", Snackbar.LENGTH_SHORT).show()
                     onUpdate()
                 } else if (cantidadActual == 1) {
                     dbHelper.eliminarProducto(idUsuario, producto.idProducto)
-                    Toast.makeText(root.context, "Producto eliminado", Toast.LENGTH_SHORT).show()
+
+                    Snackbar.make(root, "❌ Producto eliminado del carrito", Snackbar.LENGTH_SHORT).show()
 
                     layoutControlesCantidad.visibility = View.GONE
                     btnAgregarCarrito.visibility = View.VISIBLE
@@ -109,7 +112,6 @@ class ProductoAdapter(
 
     override fun getItemCount(): Int = productos.size
 
-    // ➤ Método para actualizar un producto específico en el RecyclerView
     fun actualizarProducto(producto: Producto) {
         val index = productos.indexOfFirst { it.idProducto == producto.idProducto }
         if (index != -1) {
@@ -118,7 +120,7 @@ class ProductoAdapter(
         }
     }
 
-    fun filtrarProductos(query: String) {
+    fun filtrarProductos(query: String): List<Producto> {
         productos = if (query.isEmpty()) {
             productosOriginales.toMutableList()
         } else {
@@ -127,6 +129,6 @@ class ProductoAdapter(
             }.toMutableList()
         }
         notifyDataSetChanged()
+        return productos
     }
-
 }

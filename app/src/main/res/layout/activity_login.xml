@@ -8,7 +8,6 @@
     android:padding="24dp"
     tools:context=".Login">
 
-    <!-- Logo -->
     <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="150dp"
@@ -20,9 +19,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="64dp"/>
 
-    <!-- Campo de Email -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailInputLayout"
+        android:id="@+id/tilEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/ivLogo"
@@ -39,12 +37,11 @@
             android:inputType="textEmailAddress"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Campo de Contraseña -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/passwordInputLayout"
+        android:id="@+id/tilPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/emailInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/tilEmail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:endIconMode="password_toggle"
@@ -58,20 +55,32 @@
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Botón de Inicio de Sesión -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLogin"
+    <FrameLayout
+        android:id="@+id/loginFrameLayout"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="Iniciar Sesión"
-        android:backgroundTint="@color/cardview_dark_background"
-        app:cornerRadius="50dp"
-        app:layout_constraintTop_toBottomOf="@id/passwordInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/tilPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp">
 
-    <!-- Enlace para ir a Registro -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Iniciar Sesión"
+            android:backgroundTint="@color/cardview_dark_background"
+            app:cornerRadius="50dp"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/white"/>
+    </FrameLayout>
+
     <TextView
         android:id="@+id/tvRegister"
         android:layout_width="wrap_content"
@@ -85,7 +94,7 @@
         android:clickable="true"
         android:focusable="true"
         android:background="?android:attr/selectableItemBackground"
-        app:layout_constraintTop_toBottomOf="@id/btnLogin"
+        app:layout_constraintTop_toBottomOf="@id/loginFrameLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

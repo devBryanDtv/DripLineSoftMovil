@@ -1,8 +1,8 @@
 package com.example.driplinesoftapp
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +11,7 @@ import com.example.driplinesoftapp.data.Menu
 import com.example.driplinesoftapp.data.MenuResponse
 import com.example.driplinesoftapp.databinding.ActivityMenuBinding
 import com.example.driplinesoftapp.ui.restaurante.MenuAdapter
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,7 +44,7 @@ class MenuActivity : AppCompatActivity() {
         if (idSucursal != -1) {
             cargarMenus(idSucursal)
         } else {
-            Toast.makeText(this, "Error al obtener la sucursal", Toast.LENGTH_SHORT).show()
+            mostrarSnackbarError("Error al obtener la sucursal")
             finish()
         }
 
@@ -52,30 +53,31 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun cargarMenus(idSucursal: Int) {
-        binding.progressBar.visibility = View.VISIBLE
+        mostrarCargando(true)
 
         RetrofitClient.instance.obtenerMenusPorSucursal(idSucursal)
             .enqueue(object : Callback<MenuResponse> {
                 override fun onResponse(call: Call<MenuResponse>, response: Response<MenuResponse>) {
-                    binding.progressBar.visibility = View.GONE
+                    mostrarCargando(false)
 
                     if (response.isSuccessful && response.body()?.success == true) {
                         listaMenusOriginal = response.body()?.data ?: emptyList()
 
                         if (listaMenusOriginal.isEmpty()) {
                             binding.tvNoMenus.visibility = View.VISIBLE
+                            mostrarSnackbarInfo("No se encontraron menús")
                         } else {
                             binding.tvNoMenus.visibility = View.GONE
                             filtrarMenus()
                         }
                     } else {
-                        Toast.makeText(this@MenuActivity, "No se encontraron menús", Toast.LENGTH_SHORT).show()
+                        mostrarSnackbarInfo("No se encontraron menús")
                     }
                 }
 
                 override fun onFailure(call: Call<MenuResponse>, t: Throwable) {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this@MenuActivity, "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+                    mostrarCargando(false)
+                    mostrarSnackbarError("Error de conexión: ${t.message}")
                 }
             })
     }
@@ -122,5 +124,25 @@ class MenuActivity : AppCompatActivity() {
 
         adapter.actualizarLista(menusFiltrados)
         binding.tvNoMenus.visibility = if (menusFiltrados.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    private fun mostrarCargando(mostrar: Boolean) {
+        binding.progressBar.visibility = if (mostrar) View.VISIBLE else View.GONE
+    }
+
+    // ✅ Mensaje de Error en Rojo
+    private fun mostrarSnackbarError(mensaje: String) {
+        Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(Color.RED)
+            .setTextColor(Color.WHITE)
+            .setAction("Cerrar") { }
+            .show()
+    }
+
+    // ✅ Mensaje Informativo en color normal
+    private fun mostrarSnackbarInfo(mensaje: String) {
+        Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG)
+            .setAction("OK") { }
+            .show()
     }
 }

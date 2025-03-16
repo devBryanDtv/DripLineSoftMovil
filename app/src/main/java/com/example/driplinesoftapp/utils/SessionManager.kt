@@ -53,4 +53,22 @@ class SessionManager(context: Context) {
     fun logout() {
         editor.clear().apply()
     }
+
+    fun guardarPedidoResaltado(idPedido: Int) {
+        val editor = prefs.edit()
+        editor.putInt("pedido_resaltado", idPedido)
+        editor.apply()
+    }
+
+    fun obtenerPedidoResaltado(): Int? {
+        val idPedido = prefs.getInt("pedido_resaltado", -1)
+        return if (idPedido != -1) idPedido else null
+    }
+
+    fun limpiarPedidoResaltado() {
+        val editor = prefs.edit()
+        editor.remove("pedido_resaltado")
+        editor.apply()
+    }
+
 }

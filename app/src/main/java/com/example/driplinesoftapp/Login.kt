@@ -1,17 +1,22 @@
 package com.example.driplinesoftapp
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.driplinesoftapp.api.RetrofitClient
 import com.example.driplinesoftapp.data.LoginRequest
 import com.example.driplinesoftapp.data.LoginResponse
 import com.example.driplinesoftapp.utils.SessionManager
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,69 +25,148 @@ class Login : AppCompatActivity() {
 
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
+    private lateinit var tilEmail: TextInputLayout
+    private lateinit var tilPassword: TextInputLayout
     private lateinit var btnLogin: Button
+    private lateinit var progressBar: ProgressBar
     private lateinit var tvRegister: TextView
     private lateinit var sessionManager: SessionManager
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
+        tilEmail = findViewById(R.id.tilEmail) // TextInputLayout del email
+        tilPassword = findViewById(R.id.tilPassword) // TextInputLayout de la contraseña
         btnLogin = findViewById(R.id.btnLogin)
+        progressBar = findViewById(R.id.progressBar)
         tvRegister = findViewById(R.id.tvRegister)
-
 
         sessionManager = SessionManager(this)
 
-        // Verificar si el usuario ya está logueado
+        // Mostrar mensaje si se recibe del registro
+        intent.getStringExtra("REGISTRO_EXITOSO")?.let { mensaje ->
+            mostrarSnackbar(mensaje)
+        }
+
         if (sessionManager.isLoggedIn()) {
             navigateToMainActivity(sessionManager.getUser()?.rol ?: "")
         }
+
+        // Validación en tiempo real
+        etEmail.addTextChangedListener(textWatcher)
+        etPassword.addTextChangedListener(textWatcher)
 
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val contraseña = etPassword.text.toString().trim()
 
             if (email.isEmpty() || contraseña.isEmpty()) {
-                Toast.makeText(this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show()
+                mostrarError("Por favor completa todos los campos")
                 return@setOnClickListener
             }
+
+            showLoading(true)
 
             RetrofitClient.instance.login(LoginRequest(email, contraseña))
                 .enqueue(object : Callback<LoginResponse> {
                     override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                        showLoading(false)
+
                         if (response.isSuccessful && response.body()?.success == true) {
                             val usuario = response.body()?.data
                             if (usuario != null) {
-                                // Guardar datos en las preferencias
                                 sessionManager.saveUser(usuario)
-                                // Mostrar log para confirmar que se guardaron los datos en SharedPreferences
                                 val savedUser = sessionManager.getUser()
                                 Log.d("SESSION", "Usuario guardado en sesión: $savedUser")
-
-                                // Redirigir según el rol del usuario
                                 navigateToMainActivity(usuario.rol)
                             } else {
-                                Toast.makeText(this@Login, "Usuario no encontrado", Toast.LENGTH_SHORT).show()
+                                mostrarError("Usuario no encontrado")
                             }
                         } else {
-                            Toast.makeText(this@Login, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                            mostrarError("Credenciales incorrectas")
                         }
                     }
 
                     override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                        Toast.makeText(this@Login, "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+                        showLoading(false)
+                        mostrarError("Error de conexión: ${t.message}")
                         Log.d("DEBUG", "${t.message}")
                     }
                 })
         }
-        // Agregar efecto de clic al TextView
+
         tvRegister.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java) // Cambia Register por el nombre correcto de tu actividad de registro
+            val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private val textWatcher = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            validarCampos()
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // No se requiere implementación
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            // No se requiere implementación
+        }
+    }
+
+    private fun validarCampos() {
+        val email = etEmail.text.toString().trim()
+        val password = etPassword.text.toString().trim()
+
+        val esEmailValido = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        val esPasswordValida = password.length in 8..16
+
+        if (!esEmailValido) {
+            tilEmail.error = "Correo electrónico no válido"
+        } else {
+            tilEmail.error = null
+        }
+
+        if (!esPasswordValida) {
+            tilPassword.error = "La contraseña debe tener entre 8 y 16 caracteres"
+        } else {
+            tilPassword.error = null
+        }
+
+        val habilitarBoton = esEmailValido && esPasswordValida
+        btnLogin.isEnabled = habilitarBoton
+
+        btnLogin.setBackgroundColor(
+            if (habilitarBoton) ContextCompat.getColor(this, android.R.color.background_dark)
+            else Color.parseColor("#A0A0A0")
+        )
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            btnLogin.text = ""
+            progressBar.visibility = View.VISIBLE
+            btnLogin.isEnabled = false
+        } else {
+            btnLogin.text = "Iniciar Sesión"
+            progressBar.visibility = View.GONE
+            validarCampos()  // Validar el estado del botón tras finalizar la solicitud
+        }
+    }
+
+    private fun mostrarError(mensaje: String) {
+        val rootView = findViewById<View>(android.R.id.content)
+        Snackbar.make(rootView, mensaje, Snackbar.LENGTH_LONG)
+            .setDuration(5000)
+            .setBackgroundTint(Color.RED)
+            .setTextColor(Color.WHITE)
+            .setAction("OK") { }
+            .show()
     }
 
     private fun navigateToMainActivity(rol: String) {
@@ -92,5 +176,14 @@ class Login : AppCompatActivity() {
             startActivity(Intent(this@Login, MainActivity::class.java))
         }
         finish()
+    }
+
+    private fun mostrarSnackbar(mensaje: String) {
+        val rootView = findViewById<View>(android.R.id.content)
+        Snackbar.make(rootView, mensaje, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(Color.GREEN)
+            .setTextColor(Color.WHITE)
+            .setAction("OK") { }
+            .show()
     }
 }

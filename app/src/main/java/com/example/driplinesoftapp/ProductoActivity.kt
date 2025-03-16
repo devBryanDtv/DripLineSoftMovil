@@ -1,11 +1,11 @@
 package com.example.driplinesoftapp
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +17,7 @@ import com.example.driplinesoftapp.databinding.ActivityProductoBinding
 import com.example.driplinesoftapp.models.CarritoDatabaseHelper
 import com.example.driplinesoftapp.ui.restaurante.ProductoAdapter
 import com.example.driplinesoftapp.utils.SessionManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,13 +34,11 @@ class ProductoActivity : AppCompatActivity() {
     private var idMenu: Int = -1
     private var idUsuario: Int = -1
 
-    // Nuevas variables para los datos adicionales
     private var nombreMenu: String? = null
     private var idSucursal: Int = -1
     private var nombreSucursal: String? = null
     private var nombreComercial: String? = null
     private var logoCliente: String? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,14 +50,13 @@ class ProductoActivity : AppCompatActivity() {
 
         val usuario = sessionManager.getUser()
         if (usuario == null) {
-            Toast.makeText(this, "Error: No hay usuario autenticado", Toast.LENGTH_SHORT).show()
+            mostrarSnackbarError("Error: No hay usuario autenticado")
             finish()
             return
         }
 
         idUsuario = usuario.idUsuario
 
-        // Recibir los datos adicionales del intent
         idMenu = intent.getIntExtra("ID_MENU", -1)
         nombreMenu = intent.getStringExtra("NOMBRE_MENU")
         idSucursal = intent.getIntExtra("ID_SUCURSAL", -1)
@@ -68,7 +66,6 @@ class ProductoActivity : AppCompatActivity() {
 
         binding.recyclerViewProductos.layoutManager = LinearLayoutManager(this)
 
-        // Inicializar el botón para confirmar selección
         btnConfirmarSeleccion = binding.btnConfirmarSeleccion
         btnConfirmarSeleccion.setOnClickListener {
             val productosCarrito = dbHelper.obtenerProductosPorUsuario(idUsuario)
@@ -85,7 +82,6 @@ class ProductoActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
         verificarCantidadCarrito()
         configurarSearchView()
         cargarProductos(idMenu)
@@ -94,29 +90,45 @@ class ProductoActivity : AppCompatActivity() {
     private fun configurarSearchView() {
         binding.searchViewProductos.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                adapter.filtrarProductos(query.orEmpty().trim())
+                filtrarProductos(query.orEmpty().trim())
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filtrarProductos(newText.orEmpty().trim())
+                filtrarProductos(newText.orEmpty().trim())
                 return true
             }
         })
     }
 
+    private fun filtrarProductos(query: String) {
+        val productosFiltrados = adapter.filtrarProductos(query.orEmpty().trim())
+
+        // Manejar la visibilidad del mensaje "No hay productos disponibles"
+        if (productosFiltrados.isEmpty()) {
+            binding.tvNoProductos.visibility = View.VISIBLE
+            binding.recyclerViewProductos.visibility = View.GONE
+        } else {
+            binding.tvNoProductos.visibility = View.GONE
+            binding.recyclerViewProductos.visibility = View.VISIBLE
+        }
+    }
+
+
     private fun cargarProductos(idMenu: Int) {
-        binding.progressBar.visibility = View.VISIBLE
+        mostrarCargando(true)
 
         RetrofitClient.instance.obtenerProductosPorMenu(idMenu)
             .enqueue(object : Callback<ProductoResponse> {
                 override fun onResponse(call: Call<ProductoResponse>, response: Response<ProductoResponse>) {
-                    binding.progressBar.visibility = View.GONE
+                    mostrarCargando(false)
+
                     if (response.isSuccessful && response.body()?.success == true) {
                         val productos = response.body()?.data?.toMutableList() ?: mutableListOf()
 
                         if (productos.isEmpty()) {
                             binding.tvNoProductos.visibility = View.VISIBLE
+                            mostrarSnackbarInfo("No se encontraron productos")
                         } else {
                             binding.tvNoProductos.visibility = View.GONE
                             adapter = ProductoAdapter(productos, dbHelper, sessionManager, ::agregarProductoAlCarrito) {
@@ -125,13 +137,13 @@ class ProductoActivity : AppCompatActivity() {
                             binding.recyclerViewProductos.adapter = adapter
                         }
                     } else {
-                        Toast.makeText(this@ProductoActivity, "No se encontraron productos", Toast.LENGTH_SHORT).show()
+                        mostrarSnackbarInfo("No se encontraron productos")
                     }
                 }
 
                 override fun onFailure(call: Call<ProductoResponse>, t: Throwable) {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this@ProductoActivity, "Error de conexión: ${t.message}", Toast.LENGTH_SHORT).show()
+                    mostrarCargando(false)
+                    mostrarSnackbarError("Error de conexión: ${t.message}")
                 }
             })
     }
@@ -173,5 +185,25 @@ class ProductoActivity : AppCompatActivity() {
 
         adapter.actualizarProducto(producto)
         actualizarCantidadCarrito()
+    }
+
+    private fun mostrarCargando(mostrar: Boolean) {
+        binding.progressBar.visibility = if (mostrar) View.VISIBLE else View.GONE
+    }
+
+    // ✅ Mensaje de Error en Rojo
+    private fun mostrarSnackbarError(mensaje: String) {
+        Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(Color.RED)
+            .setTextColor(Color.WHITE)
+            .setAction("Cerrar") { }
+            .show()
+    }
+
+    // ✅ Mensaje Informativo en color normal
+    private fun mostrarSnackbarInfo(mensaje: String) {
+        Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG)
+            .setAction("OK") { }
+            .show()
     }
 }

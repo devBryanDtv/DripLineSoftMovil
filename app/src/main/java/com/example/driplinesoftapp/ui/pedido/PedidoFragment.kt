@@ -23,7 +23,6 @@ class PedidoFragment : Fragment() {
     private var listaPedidosOriginal: List<Pedido> = emptyList()
     private var pedidoIdResaltar: Int? = null
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,22 +32,12 @@ class PedidoFragment : Fragment() {
         val root: View = binding.root
         pedidoViewModel = ViewModelProvider(this).get(PedidoViewModel::class.java)
 
-
-
         // Recibir el pedido a resaltar desde el Intent
         pedidoIdResaltar = arguments?.getInt("resaltarPedidoId", -1)
 
         pedidoViewModel.pedidos.observe(viewLifecycleOwner) { pedidos ->
-
             listaPedidosOriginal = pedidos
             filtrarPedidos()
-
-        }
-
-        pedidoAdapter = PedidoAdapter(emptyList()) { activarSearchView() }
-        binding.recyclerViewPedidos.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = pedidoAdapter
         }
 
         val sessionManager = SessionManager(requireContext())
@@ -56,6 +45,21 @@ class PedidoFragment : Fragment() {
         val idUsuario = usuario?.idUsuario ?: return root
 
         Log.d("PedidoFragment", "ID Usuario autenticado: $idUsuario")
+
+        pedidoAdapter = PedidoAdapter(
+            requireContext(),
+            emptyList(),
+            { activarSearchView() },         // 🔹 Este es el parámetro `onCardClick`
+            onPedidoCancelado = {
+                pedidoViewModel.cargarHistorialPedidos(idUsuario) // 🔹 Volver a recargar los datos
+            }
+        )
+
+
+        binding.recyclerViewPedidos.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = pedidoAdapter
+        }
 
         pedidoViewModel.cargarHistorialPedidos(idUsuario)
 
@@ -149,8 +153,6 @@ class PedidoFragment : Fragment() {
         pedidoAdapter.actualizarLista(listaFiltrada)
         binding.tvNoPedidos.visibility = if (listaFiltrada.isEmpty()) View.VISIBLE else View.GONE
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -1,9 +1,9 @@
 package com.example.driplinesoftapp
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +13,7 @@ import com.example.driplinesoftapp.data.Sucursal
 import com.example.driplinesoftapp.data.SucursalResponse
 import com.example.driplinesoftapp.databinding.ActivitySucursalBinding
 import com.example.driplinesoftapp.ui.restaurante.SucursalAdapter
+import com.google.android.material.snackbar.Snackbar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -53,7 +54,7 @@ class SucursalActivity : AppCompatActivity() {
 
     private fun verificarCliente() {
         if (idCliente == -1) {
-            mostrarMensaje("Error al obtener el cliente")
+            mostrarSnackbarError("Error al obtener el cliente")
             finish()
         } else {
             cargarSucursales(idCliente)
@@ -71,15 +72,29 @@ class SucursalActivity : AppCompatActivity() {
                     if (response.isSuccessful && response.body()?.success == true) {
                         listaSucursalesOriginal = response.body()?.data ?: emptyList()
                         adapter.actualizarLista(listaSucursalesOriginal)
+
+                        // 🔹 Mostrar el mensaje informativo si no hay sucursales
+                        if (listaSucursalesOriginal.isEmpty()) {
+                            binding.tvNoSucursales.visibility = View.VISIBLE
+                            binding.recyclerViewSucursales.visibility = View.GONE
+                        } else {
+                            binding.tvNoSucursales.visibility = View.GONE
+                            binding.recyclerViewSucursales.visibility = View.VISIBLE
+                        }
+
                     } else {
-                        mostrarMensaje("No se encontraron sucursales")
+                        mostrarSnackbarInfo("No se encontraron sucursales")
+                        binding.tvNoSucursales.visibility = View.VISIBLE
+                        binding.recyclerViewSucursales.visibility = View.GONE
                     }
                 }
 
                 override fun onFailure(call: Call<SucursalResponse>, t: Throwable) {
                     mostrarCargando(false)
                     Log.e("SucursalActivity", "Error de conexión: ${t.message}", t)
-                    mostrarMensaje("Error de conexión: ${t.message}")
+                    mostrarSnackbarError("Error de conexión: ${t.message}")
+                    binding.tvNoSucursales.visibility = View.VISIBLE
+                    binding.recyclerViewSucursales.visibility = View.GONE
                 }
             })
     }
@@ -106,13 +121,34 @@ class SucursalActivity : AppCompatActivity() {
         }
 
         adapter.actualizarLista(sucursalesFiltradas)
+
+        // 🔹 Mostrar el mensaje informativo si no hay coincidencias
+        if (sucursalesFiltradas.isEmpty()) {
+            binding.tvNoSucursales.visibility = View.VISIBLE
+            binding.recyclerViewSucursales.visibility = View.GONE
+        } else {
+            binding.tvNoSucursales.visibility = View.GONE
+            binding.recyclerViewSucursales.visibility = View.VISIBLE
+        }
     }
 
     private fun mostrarCargando(mostrar: Boolean) {
         binding.progressBar.visibility = if (mostrar) View.VISIBLE else View.GONE
     }
 
-    private fun mostrarMensaje(mensaje: String) {
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
+    // ✅ Mensaje de Error en Rojo
+    private fun mostrarSnackbarError(mensaje: String) {
+        Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(Color.RED)
+            .setTextColor(Color.WHITE)
+            .setAction("Cerrar") { }
+            .show()
+    }
+
+    // ✅ Mensaje Informativo en color normal
+    private fun mostrarSnackbarInfo(mensaje: String) {
+        Snackbar.make(binding.root, mensaje, Snackbar.LENGTH_LONG)
+            .setAction("OK") { }
+            .show()
     }
 }

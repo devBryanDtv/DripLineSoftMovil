@@ -122,7 +122,7 @@ class VerPerfilFragment : Fragment(), View.OnTouchListener {
 
     private fun formatearFecha(fecha: String): String {
         return try {
-            val formatoEntrada = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault())
+            val formatoEntrada = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
             formatoEntrada.timeZone = TimeZone.getTimeZone("UTC")
 
             val formatoSalida = SimpleDateFormat("d 'de' MMMM, yyyy 'a las' h:mm a", Locale("es", "ES"))
@@ -134,6 +134,7 @@ class VerPerfilFragment : Fragment(), View.OnTouchListener {
             "Fecha no disponible"
         }
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

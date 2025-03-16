@@ -1,6 +1,7 @@
 package com.example.driplinesoftapp.ui.restaurante
 
 import android.content.Intent
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
@@ -33,8 +34,8 @@ class MenuAdapter(
         val menu = menus[position]
 
         with(holder.binding) {
-            tvNombreMenu.text = menu.nombreMenu
-            tvCategoria.text = "Categoría: ${menu.categoria}"
+            tvNombreMenu.text = Html.fromHtml("<b>${menu.nombreMenu}</b>")
+            tvCategoria.text = Html.fromHtml("<b>Categoría:</b> ${menu.categoria}")
 
             // Efecto visual al presionar
             root.setOnTouchListener { v, event ->
@@ -58,7 +59,6 @@ class MenuAdapter(
             }
         }
     }
-
 
     override fun getItemCount(): Int = menus.size
 

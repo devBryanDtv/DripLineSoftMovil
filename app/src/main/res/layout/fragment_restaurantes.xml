@@ -63,6 +63,20 @@
             android:layout_height="wrap_content"
             android:text="Otro" />
     </com.google.android.material.tabs.TabLayout>
+    <!-- TextView Informativo para cuando no haya restaurantes -->
+    <TextView
+        android:id="@+id/tvNoResultados"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No se encontraron restaurantes disponibles"
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/tabLayoutSectores"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
 
     <!-- RecyclerView para la lista de clientes -->
     <androidx.recyclerview.widget.RecyclerView

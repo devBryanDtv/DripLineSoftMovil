@@ -12,6 +12,7 @@ data class Pedido(
     @SerializedName("nombre_comercial") val nombreComercial: String,
     @SerializedName("nombre_sucursal") val nombreSucursal: String,
     @SerializedName("fecha_pedido") val fechaPedido: String,
+    @SerializedName("fecha_entregado") val fechaEntregado: String?,
     @SerializedName("metodo_pago") val metodoPago: String,
     @SerializedName("estado") val estado: String,
     @SerializedName("total") val total: Double,

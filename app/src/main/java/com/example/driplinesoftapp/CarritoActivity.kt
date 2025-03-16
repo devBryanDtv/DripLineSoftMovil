@@ -1,8 +1,10 @@
 package com.example.driplinesoftapp
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,7 @@ import com.example.driplinesoftapp.databinding.ActivityCarritoBinding
 import com.example.driplinesoftapp.models.CarritoDatabaseHelper
 import com.example.driplinesoftapp.ui.restaurante.CarritoAdapter
 import com.example.driplinesoftapp.utils.SessionManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -210,7 +213,10 @@ class CarritoActivity : AppCompatActivity() {
     }
 
     private fun mostrarMensaje(mensaje: String) {
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
+        val rootView = findViewById<View>(android.R.id.content)
+        Snackbar.make(rootView, mensaje, Snackbar.LENGTH_LONG)
+            .setAction("OK") { }
+            .show()
     }
     private fun actualizarSubtotal(productos: List<Producto>) {
         val subtotal = productos.sumOf {

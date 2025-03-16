@@ -1,5 +1,6 @@
 package com.example.driplinesoftapp.ui.restaurante
 
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -22,7 +23,6 @@ class CarritoAdapter(
     private val onSubtotalChange: (Double) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    // Tipos de vista para manejar los tres elementos
     private val TIPO_NEGOCIO = 1
     private val TIPO_USUARIO = 2
     private val TIPO_PEDIDO = 3
@@ -51,18 +51,17 @@ class CarritoAdapter(
         when (holder) {
             is NegocioViewHolder -> {
                 with(holder.binding) {
-                    tvNombreComercial.text = nombreComercial ?: "Sin nombre comercial"
-                    tvNombreSucursal.text = "Sucursal: ${nombreSucursal ?: "No especificada"}"
-                    tvNombreMenu.text = "Menú: ${nombreMenu ?: "No especificado"}"
+                    tvNombreComercial.text = Html.fromHtml("<b>Negocio:</b> ${nombreComercial ?: "Sin nombre comercial"}")
+                    tvNombreSucursal.text = Html.fromHtml("<b>Sucursal:</b> ${nombreSucursal ?: "No especificada"}")
+                    tvNombreMenu.text = Html.fromHtml("<b>Menú:</b> ${nombreMenu ?: "No especificado"}")
                 }
             }
 
             is UsuarioViewHolder -> {
-                // Obtener los datos del usuario directamente desde SessionManager
                 val usuario = sessionManager.getUser()
                 with(holder.binding) {
-                    tvNombreUsuario.text = "Cliente: ${usuario?.nombre ?: "No especificado"}"
-                    tvCorreoUsuario.text = "Correo: ${usuario?.email ?: "No especificado"}"
+                    tvNombreUsuario.text = Html.fromHtml("<b>Cliente:</b> ${usuario?.nombre ?: "No especificado"}")
+                    tvCorreoUsuario.text = Html.fromHtml("<b>Correo:</b> ${usuario?.email ?: "No especificado"}")
                 }
             }
 
@@ -75,7 +74,9 @@ class CarritoAdapter(
                             producto.idProducto
                         )?.cantidad ?: 0
 
-                        val textoProducto = "• ${cantidadEnCarrito}x ${producto.nombreProducto} - $${producto.precio * cantidadEnCarrito}"
+                        val textoProducto = Html.fromHtml(
+                            "<b>• ${cantidadEnCarrito}x ${producto.nombreProducto}</b> - $${producto.precio * cantidadEnCarrito}"
+                        )
 
                         val textViewProducto = TextView(layoutProductos.context).apply {
                             text = textoProducto
@@ -93,7 +94,10 @@ class CarritoAdapter(
                             it.idProducto
                         )?.cantidad ?: 0)
                     }
-                    tvSubtotal.text = "Subtotal: $${"%.2f".format(subtotal)}"
+                    tvSubtotal.text = Html.fromHtml("<b>Subtotal:</b> $${"%.2f".format(subtotal)}")
+
+                    // Notificar el cambio del subtotal
+                    onSubtotalChange(subtotal)
                 }
             }
         }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp"
     app:cardElevation="6dp"
     app:cardCornerRadius="12dp">
@@ -13,7 +13,6 @@
         android:padding="16dp"
         android:orientation="vertical">
 
-        <!-- Número de Pedido en Grande -->
         <TextView
             android:id="@+id/tvNumeroPedido"
             android:text="Pedido #0001"
@@ -23,6 +22,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvFechaEntregado"
+            android:text="Fecha de Entrega: N/A"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@android:color/holo_green_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tvTiempoEntrega"
@@ -79,6 +89,34 @@
             android:text="Detalles"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+        <!-- 🔹 Botón "Cancelar Pedido" con ProgressBar -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <!-- Botón -->
+            <Button
+                android:id="@+id/btnCancelarPedido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cancelar Pedido"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:enabled="true"
+                android:layout_gravity="center"/>
+
+            <!-- ProgressBar dentro del botón -->
+            <ProgressBar
+                android:id="@+id/progressBarCancelarPedido"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:indeterminateTint="@android:color/white"/>
+        </FrameLayout>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

@@ -1,6 +1,7 @@
 package com.example.driplinesoftapp.ui.restaurante
 
 import android.content.Intent
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -15,7 +16,7 @@ import com.example.driplinesoftapp.MenuActivity
 class SucursalAdapter(
     private var sucursales: List<Sucursal>,
     private val logoCliente: String,
-    private val nombreComercial: String // Nombre comercial del cliente
+    private val nombreComercial: String
 ) : RecyclerView.Adapter<SucursalAdapter.SucursalViewHolder>() {
 
     private var sucursalesOriginales: List<Sucursal> = sucursales.toList()
@@ -36,10 +37,13 @@ class SucursalAdapter(
         // Verificar que la sucursal esté activa antes de mostrarla
         if (sucursal.activa == true) {
             with(holder.binding) {
-                tvNombreSucursal.text = sucursal.nombreSucursal
-                tvDireccion.text = "Dirección: ${sucursal.direccion ?: "No disponible"}"
-                tvTelefono.text = "Teléfono: ${sucursal.telefono ?: "No disponible"}"
-                tvHorario.text = "Horario: ${sucursal.horarioAtencion ?: "No disponible"}"
+                tvNombreSucursal.text = Html.fromHtml("<b>${sucursal.nombreSucursal}</b>")
+                tvDireccion.text = Html.fromHtml("<b>Dirección:</b> ${sucursal.direccion ?: "No disponible"}")
+                tvTelefono.text = Html.fromHtml("<b>Teléfono:</b> ${sucursal.telefono ?: "No disponible"}")
+
+                // Formatear el horario usando Html.fromHtml
+                val horarioFormateado = formatearHorario(sucursal.horarioAtencion)
+                tvHorario.text = Html.fromHtml(horarioFormateado)
 
                 // Cargar el logo del cliente en cada card de sucursal
                 Glide.with(ivLogoSucursal.context)
@@ -84,5 +88,29 @@ class SucursalAdapter(
         sucursales = nuevaLista.filter { it.activa == true }
 
         notifyDataSetChanged()
+    }
+
+    /** 🔹 Formatea el horario al formato solicitado */
+    private fun formatearHorario(horario: String?): String {
+        return if (!horario.isNullOrEmpty()) {
+            val regex = Regex("""(\d{2}):(\d{2}) - (\d{2}):(\d{2})""")
+            val match = regex.find(horario)
+
+            if (match != null) {
+                val inicio = match.groupValues[1].toInt()
+                val fin = match.groupValues[3].toInt()
+
+                val horaInicio = if (inicio < 12) "$inicio:00 am" else "${inicio - 12}:00 pm"
+                val horaFin = if (fin < 12) "$fin:00 am" else "${fin - 12}:00 pm"
+
+                "<b>Días de la semana:</b> De lunes a viernes<br>" +
+                        "<b>Descanso:</b> Sábado y domingo<br>" +
+                        "<b>Horario:</b> De $horaInicio a $horaFin"
+            } else {
+                "<b>Horario:</b> No disponible"
+            }
+        } else {
+            "<b>Horario:</b> No disponible"
+        }
     }
 }

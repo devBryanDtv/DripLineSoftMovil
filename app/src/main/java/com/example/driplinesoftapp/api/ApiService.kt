@@ -98,6 +98,8 @@ interface ApiService {
         @Path("id_usuario") idUsuario: Int
     ): Call<CantidadPedidosResponse>
 
+    @PUT("pedido/cancelar/{id}")
+    fun cancelarPedido(@Path("id") idPedido: Int): Call<Map<String, Any>>
 
 
 }

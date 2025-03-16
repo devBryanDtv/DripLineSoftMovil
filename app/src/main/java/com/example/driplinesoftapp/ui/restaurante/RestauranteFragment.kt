@@ -42,6 +42,15 @@ class RestauranteFragment : Fragment() {
         viewModel.clientes.observe(viewLifecycleOwner) { clientes ->
             listaClientesOriginal = clientes
             clienteAdapter.actualizarLista(clientes)
+
+            // 🔹 Mostrar u ocultar el mensaje informativo
+            if (clientes.isEmpty()) {
+                binding.tvNoResultados.visibility = View.VISIBLE
+                binding.recyclerViewClientes.visibility = View.GONE
+            } else {
+                binding.tvNoResultados.visibility = View.GONE
+                binding.recyclerViewClientes.visibility = View.VISIBLE
+            }
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
@@ -98,6 +107,15 @@ class RestauranteFragment : Fragment() {
         }
 
         clienteAdapter.actualizarLista(clientesFiltrados)
+
+        // 🔹 Mostrar u ocultar el mensaje informativo en el filtro
+        if (clientesFiltrados.isEmpty()) {
+            binding.tvNoResultados.visibility = View.VISIBLE
+            binding.recyclerViewClientes.visibility = View.GONE
+        } else {
+            binding.tvNoResultados.visibility = View.GONE
+            binding.recyclerViewClientes.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {
