@@ -3,6 +3,7 @@ package com.example.driplinesoftapp.ui.cliente_negocio
 import java.text.SimpleDateFormat
 import java.util.*
 import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,9 +35,8 @@ class UsuarioAdapter(private var usuarios: List<Usuario>) :
         holder.tvEmail.text = Html.fromHtml("<b>Correo:</b> ${usuario.email}")
 
         // Obtener la fecha de creación desde "pivot" y formatearla en español
-        val fechaClienteDesde = formatearFecha(usuario.pivot?.createdAt)
+        val fechaClienteDesde = formatearFecha(usuario.fechaCreacion)
         holder.tvFechaClienteDesde.text = Html.fromHtml("<b>Cliente desde:</b> $fechaClienteDesde")
-
     }
 
     override fun getItemCount(): Int = usuarios.size
@@ -46,22 +46,19 @@ class UsuarioAdapter(private var usuarios: List<Usuario>) :
         notifyDataSetChanged()
     }
 
-    fun formatearFecha(fechaISO: String?): String {
-        if (fechaISO.isNullOrEmpty()) return "Fecha desconocida"
+    // ➤ Nuevo formato de fecha: Ejemplo → 12 de marzo, 2025 a las 10:45 AM
+    private fun formatearFecha(fecha: String?): String {
+        return try {
+            val formatoEntrada = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            formatoEntrada.timeZone = TimeZone.getTimeZone("UTC")
 
-        try {
-            // Convertir de formato ISO 8601 a Date
-            val formatoEntrada = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.US)
-            formatoEntrada.timeZone = TimeZone.getTimeZone("UTC") // Definir la zona horaria correcta
-            val fecha = formatoEntrada.parse(fechaISO)
+            val formatoSalida = SimpleDateFormat("d 'de' MMMM, yyyy 'a las' h:mm a", Locale("es", "ES"))
 
-            // Formatear la fecha en español: martes 12 de marzo, 2025
-            val formatoSalida = SimpleDateFormat("EEEE d 'de' MMMM, yyyy", Locale("es", "ES"))
-            return formatoSalida.format(fecha!!)
+            val fechaParseada = formatoEntrada.parse(fecha)
+            formatoSalida.format(fechaParseada ?: Date())
         } catch (e: Exception) {
-            e.printStackTrace()
-            return "Fecha inválida"
+            Log.e("UsuarioAdapter", "❌ Error formateando fecha: ${e.message}")
+            "Fecha no disponible"
         }
     }
-
 }

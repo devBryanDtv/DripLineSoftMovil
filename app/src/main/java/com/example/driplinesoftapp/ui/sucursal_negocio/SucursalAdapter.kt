@@ -1,11 +1,11 @@
 package com.example.driplinesoftapp.ui.sucursal_negocio
 
 import android.util.Log
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.driplinesoftapp.R
@@ -13,6 +13,7 @@ import com.example.driplinesoftapp.api.RetrofitClient
 import com.example.driplinesoftapp.data.Sucursal
 import com.example.driplinesoftapp.data_negocio.SucursalToggleResponse
 import com.example.driplinesoftapp.databinding.ItemSucursalBinding
+import com.google.android.material.snackbar.Snackbar
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,10 +39,13 @@ class SucursalAdapter(
     override fun onBindViewHolder(holder: SucursalViewHolder, position: Int) {
         val sucursal = sucursales[position]
         with(holder.binding) {
-            tvNombreSucursal.text = sucursal.nombreSucursal
-            tvDireccion.text = "Dirección: ${sucursal.direccion ?: "No disponible"}"
-            tvTelefono.text = "Teléfono: ${sucursal.telefono ?: "No disponible"}"
-            tvHorario.text = "Horario: ${sucursal.horarioAtencion ?: "No disponible"}"
+            tvNombreSucursal.text = Html.fromHtml("<b>${sucursal.nombreSucursal}</b>")
+            tvDireccion.text = Html.fromHtml("<b>Dirección:</b> ${sucursal.direccion ?: "No disponible"}")
+            tvTelefono.text = Html.fromHtml("<b>Teléfono:</b> ${sucursal.telefono ?: "No disponible"}")
+
+            // Formatear el horario usando Html.fromHtml
+            val horarioFormateado = formatearHorario(sucursal.horarioAtencion)
+            tvHorario.text = Html.fromHtml(horarioFormateado)
 
             // Mostrar el Switch y establecer el estado actual de la sucursal
             switchSucursal.visibility = View.VISIBLE
@@ -84,23 +88,27 @@ class SucursalAdapter(
                     val estado = response.body()?.estado
                     val mensaje = response.body()?.mensaje ?: "Estado actualizado"
 
-                    // 🔹 Actualizar solo el Switch correspondiente, sin `notifyDataSetChanged()`
                     holder.binding.switchSucursal.isChecked = estado == true
                     Log.d("SucursalAdapter", "✅ Sucursal ID: $idSucursal - Estado actualizado correctamente a: ${estado}")
-                    Toast.makeText(holder.itemView.context, mensaje, Toast.LENGTH_SHORT).show()
+                    mostrarSnackbar(holder, mensaje)
                 } else {
-                    holder.binding.switchSucursal.isChecked = !activar // Revertir cambio en caso de error
+                    holder.binding.switchSucursal.isChecked = !activar
                     Log.e("SucursalAdapter", "❌ Error en la actualización: ${response.errorBody()?.string()}")
-                    Toast.makeText(holder.itemView.context, "Error en la actualización", Toast.LENGTH_SHORT).show()
+                    mostrarSnackbar(holder, "Error en la actualización")
                 }
             }
 
             override fun onFailure(call: Call<SucursalToggleResponse>, t: Throwable) {
-                holder.binding.switchSucursal.isChecked = !activar // Revertir cambio en caso de error
+                holder.binding.switchSucursal.isChecked = !activar
                 Log.e("SucursalAdapter", "❌ Error de conexión: ${t.message}")
-                Toast.makeText(holder.itemView.context, "Error de conexión", Toast.LENGTH_SHORT).show()
+                mostrarSnackbar(holder, "Error de conexión")
             }
         })
+    }
+
+    /** Método para mostrar un Snackbar */
+    private fun mostrarSnackbar(holder: SucursalViewHolder, mensaje: String) {
+        Snackbar.make(holder.binding.root, mensaje, Snackbar.LENGTH_SHORT).show()
     }
 
     /** Actualiza la lista de sucursales */
@@ -108,5 +116,29 @@ class SucursalAdapter(
         sucursalesOriginales = nuevaLista.toList()
         sucursales = nuevaLista
         notifyDataSetChanged()
+    }
+
+    /** 🔹 Formatea el horario al formato solicitado */
+    private fun formatearHorario(horario: String?): String {
+        return if (!horario.isNullOrEmpty()) {
+            val regex = Regex("""(\d{2}):(\d{2}) - (\d{2}):(\d{2})""")
+            val match = regex.find(horario)
+
+            if (match != null) {
+                val inicio = match.groupValues[1].toInt()
+                val fin = match.groupValues[3].toInt()
+
+                val horaInicio = if (inicio < 12) "$inicio:00 am" else "${inicio - 12}:00 pm"
+                val horaFin = if (fin < 12) "$fin:00 am" else "${fin - 12}:00 pm"
+
+                "<b>Días de la semana:</b> De lunes a viernes<br>" +
+                        "<b>Descanso:</b> Sábado y domingo<br>" +
+                        "<b>Horario:</b> De $horaInicio a $horaFin"
+            } else {
+                "<b>Horario:</b> No disponible"
+            }
+        } else {
+            "<b>Horario:</b> No disponible"
+        }
     }
 }

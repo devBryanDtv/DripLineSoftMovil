@@ -70,7 +70,7 @@ class ProductoAdapter(
                 productos[position] = producto.copy(cantidad = 1)
                 notifyItemChanged(position)
 
-                Snackbar.make(root, "✅ Producto agregado al carrito", Snackbar.LENGTH_SHORT).show()
+                //Snackbar.make(root, "✅ Producto agregado al carrito", Snackbar.LENGTH_SHORT).show()
                 onUpdate()
             }
 
@@ -82,7 +82,7 @@ class ProductoAdapter(
                 dbHelper.actualizarCantidad(idUsuario, productoCarritoActualizado)
                 tvCantidad.text = nuevaCantidad.toString()
 
-                Snackbar.make(root, "➕ Cantidad actualizada", Snackbar.LENGTH_SHORT).show()
+                //Snackbar.make(root, "➕ Cantidad actualizada", Snackbar.LENGTH_SHORT).show()
                 onUpdate()
             }
 
@@ -95,12 +95,12 @@ class ProductoAdapter(
                     dbHelper.actualizarCantidad(idUsuario, productoCarritoActualizado)
                     tvCantidad.text = nuevaCantidad.toString()
 
-                    Snackbar.make(root, "➖ Cantidad actualizada", Snackbar.LENGTH_SHORT).show()
+                  //  Snackbar.make(root, "➖ Cantidad actualizada", Snackbar.LENGTH_SHORT).show()
                     onUpdate()
                 } else if (cantidadActual == 1) {
                     dbHelper.eliminarProducto(idUsuario, producto.idProducto)
 
-                    Snackbar.make(root, "❌ Producto eliminado del carrito", Snackbar.LENGTH_SHORT).show()
+                    //Snackbar.make(root, "❌ Producto eliminado del carrito", Snackbar.LENGTH_SHORT).show()
 
                     layoutControlesCantidad.visibility = View.GONE
                     btnAgregarCarrito.visibility = View.VISIBLE

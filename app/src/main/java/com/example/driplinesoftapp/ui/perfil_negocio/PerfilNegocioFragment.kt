@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.driplinesoftapp.Login
 import com.example.driplinesoftapp.R
+import com.example.driplinesoftapp.SplashActivity
 import com.example.driplinesoftapp.databinding.FragmentPerfilNegocioBinding
 import com.example.driplinesoftapp.utils.SessionManager
+import com.google.android.material.snackbar.Snackbar
 
 class PerfilNegocioFragment : Fragment(), View.OnTouchListener {
 
@@ -56,14 +58,18 @@ class PerfilNegocioFragment : Fragment(), View.OnTouchListener {
     private fun cerrarSesion() {
         sessionManager.logout()
         mostrarMensaje("Sesión cerrada correctamente")
-        val intent = Intent(requireContext(), Login::class.java)
+
+        // Mostrar el Splash Screen con el mensaje "Cerrando sesión..."
+        val intent = Intent(requireContext(), SplashActivity::class.java)
+        intent.putExtra("MENSAJE_SPLASH", "Cerrando sesión...") // Agrega el mensaje personalizado
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         requireActivity().finish()
     }
 
     private fun mostrarMensaje(mensaje: String) {
-        Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show()
+        val rootView = requireView() // Obtiene la vista raíz del Fragment
+        Snackbar.make(rootView, mensaje, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

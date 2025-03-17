@@ -3,16 +3,16 @@
 
     <item
         android:id="@+id/navigation_cliente_negocio"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/ic_person_client"
         android:title="@string/title_cliente" />
     <item
         android:id="@+id/navigation_sucursal_negocio"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/ic_food"
         android:title="@string/title_sucursal" />
 
     <item
         android:id="@+id/navigation_pedidos_negocio"
-        android:icon="@drawable/ic_carrito"
+        android:icon="@drawable/ic_pedidos"
         android:title="@string/title_pedidos" />
 
     <item

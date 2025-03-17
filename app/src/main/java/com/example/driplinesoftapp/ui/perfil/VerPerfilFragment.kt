@@ -31,18 +31,15 @@ class VerPerfilFragment : Fragment(), View.OnTouchListener {
     ): View {
         _binding = FragmentVerPerfilBinding.inflate(inflater, container, false)
 
-        // Configurar la flecha de regreso en la ActionBar
         (activity as AppCompatActivity).supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeButtonEnabled(true)
         }
         setHasOptionsMenu(true) // Habilita opciones en el menú
 
-        // Obtener datos del usuario y mostrarlos
         sessionManager = SessionManager(requireContext())
         cargarDatosUsuario()
 
-        // Habilitar gestos de deslizamiento para volver atrás
         binding.root.setOnTouchListener(this)
 
         return binding.root
@@ -56,25 +53,22 @@ class VerPerfilFragment : Fragment(), View.OnTouchListener {
             return
         }
 
-        // Formatear la fecha
         val fechaFormateada = formatearFecha(usuario.fechaCreacion)
 
-        // Aplicar negrita a los subtítulos usando HTML
+        // Aplicar formato HTML para negritas
         binding.tvEmailUsuario.text = Html.fromHtml("<b>Correo electrónico:</b> ${usuario.email}")
         binding.tvFechaCreacion.text = Html.fromHtml("<b>Te uniste desde:</b> $fechaFormateada")
         binding.tvNombreUsuario.text = usuario.nombre
 
-        // Determinar el rol del usuario y consumir el endpoint correspondiente
         when (usuario.rol) {
             "cliente_final" -> {
                 binding.cardPedidos.visibility = VISIBLE
                 binding.cardInformacionNegocio.visibility = GONE
 
-                // Consumir endpoint de cantidad de pedidos
                 viewModel.obtenerCantidadPedidosUsuario(usuario.idUsuario)
 
                 viewModel.cantidadPedidos.observe(viewLifecycleOwner) { cantidadPedidos ->
-                    binding.tvCantidadPedidos.text = "Pedidos realizados: $cantidadPedidos"
+                    binding.tvCantidadPedidos.text = Html.fromHtml("<b>Pedidos realizados:</b> $cantidadPedidos")
                 }
             }
 
@@ -82,39 +76,35 @@ class VerPerfilFragment : Fragment(), View.OnTouchListener {
                 binding.cardPedidos.visibility = GONE
                 binding.cardInformacionNegocio.visibility = VISIBLE
 
-                // Consumir endpoint de estadísticas del negocio
                 viewModel.obtenerEstadisticasCliente(usuario.idUsuario)
 
                 viewModel.cantidadSucursales.observe(viewLifecycleOwner) { cantidadSucursales ->
-                    binding.tvCantidadSucursales.text = "Sucursales: $cantidadSucursales"
+                    binding.tvCantidadSucursales.text = Html.fromHtml("<b>Sucursales:</b> $cantidadSucursales")
                 }
 
                 viewModel.cantidadMenus.observe(viewLifecycleOwner) { cantidadMenus ->
-                    binding.tvCantidadMenus.text = "Menús: $cantidadMenus"
+                    binding.tvCantidadMenus.text = Html.fromHtml("<b>Menús:</b> $cantidadMenus")
                 }
 
                 viewModel.cantidadProductos.observe(viewLifecycleOwner) { cantidadProductos ->
-                    binding.tvCantidadProductos.text = "Productos: $cantidadProductos"
+                    binding.tvCantidadProductos.text = Html.fromHtml("<b>Productos:</b> $cantidadProductos")
                 }
             }
 
             else -> {
-                // Si el rol no coincide, se ocultan ambos CardView
                 binding.cardPedidos.visibility = GONE
                 binding.cardInformacionNegocio.visibility = GONE
                 Log.e("VerPerfilFragment", "❌ Rol no identificado: ${usuario.rol}")
             }
         }
 
-        // Mostrar error en caso de fallo
         viewModel.error.observe(viewLifecycleOwner) { error ->
-            binding.tvCantidadPedidos.text = "Error: $error"
-            binding.tvCantidadSucursales.text = "Error: $error"
-            binding.tvCantidadMenus.text = "Error: $error"
-            binding.tvCantidadProductos.text = "Error: $error"
+            binding.tvCantidadPedidos.text = Html.fromHtml("<b>Error:</b> $error")
+            binding.tvCantidadSucursales.text = Html.fromHtml("<b>Error:</b> $error")
+            binding.tvCantidadMenus.text = Html.fromHtml("<b>Error:</b> $error")
+            binding.tvCantidadProductos.text = Html.fromHtml("<b>Error:</b> $error")
         }
 
-        // 📌 Logs para verificar los datos
         Log.d("VerPerfilFragment", "✅ Nombre: ${binding.tvNombreUsuario.text}")
         Log.d("VerPerfilFragment", "✅ Correo electrónico: ${binding.tvEmailUsuario.text}")
         Log.d("VerPerfilFragment", "✅ Fecha Creación: ${binding.tvFechaCreacion.text}")
@@ -135,11 +125,10 @@ class VerPerfilFragment : Fragment(), View.OnTouchListener {
         }
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                findNavController().popBackStack() // Regresar al fragmento anterior
+                findNavController().popBackStack()
                 true
             }
             else -> super.onOptionsItemSelected(item)

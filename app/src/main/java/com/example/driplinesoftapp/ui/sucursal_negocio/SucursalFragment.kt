@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.driplinesoftapp.data.Sucursal
 import com.example.driplinesoftapp.databinding.FragmentSucursalesNegocioBinding
 import com.example.driplinesoftapp.utils.SessionManager
+import com.google.android.material.snackbar.Snackbar
 
 class SucursalFragment : Fragment() {
 
@@ -60,8 +61,9 @@ class SucursalFragment : Fragment() {
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
-            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+            Snackbar.make(requireView(), errorMessage, Snackbar.LENGTH_SHORT).show()
         }
+
 
         configurarSearchView()
     }

@@ -43,9 +43,7 @@ class PedidoNegocioFragment : Fragment() {
 
         // Inicializamos el adaptador con un lambda que maneja el click
         pedidoAdapter = PedidoNegocioAdapter(emptyList()) { pedido ->
-            // Aquí puedes manejar lo que suceda al hacer clic en un pedido
-            // Por ejemplo, mostrar detalles del pedido
-            mostrarDetallesPedido(pedido)
+
         }
 
         binding.recyclerViewPedidos.adapter = pedidoAdapter
@@ -104,6 +102,7 @@ class PedidoNegocioFragment : Fragment() {
             2 -> "en preparación"
             3 -> "listo"
             4 -> "cancelado"
+            5 -> "entregado"
             else -> null
         }
 
@@ -125,10 +124,7 @@ class PedidoNegocioFragment : Fragment() {
         binding.tvNoPedidos.visibility = if (listaFiltrada.isEmpty()) View.VISIBLE else View.GONE
     }
 
-    private fun mostrarDetallesPedido(pedido: PedidoNegocio) {
-        // Mostrar los detalles del pedido cuando se haga clic en uno
-        Toast.makeText(requireContext(), "Detalles de Pedido: ${pedido.idPedido}", Toast.LENGTH_SHORT).show()
-    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -126,6 +126,7 @@ class PedidoFragment : Fragment() {
             2 -> "en preparación"
             3 -> "listo"
             4 -> "cancelado"
+            5 -> "entregado"
             else -> null
         }
 

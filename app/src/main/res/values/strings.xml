@@ -6,8 +6,8 @@
     <string name="title_perfil">Perfil</string>
     <string name="title_activity_negocio">NegocioActivity</string>
 
-    <string name="title_cliente">Cartera Clientes</string>
-    <string name="title_sucursal">Sucursal</string>
+    <string name="title_cliente">Clientes</string>
+    <string name="title_sucursal">Sucursales</string>
     <string name="title_perfil_negocio">Perfil Negocio</string>
     <string name="logo">Logo</string>
     <string name="correo_electr_nico">Correo Electrónico</string>

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.driplinesoftapp.databinding.FragmentClientesNegocioBinding
 import com.example.driplinesoftapp.models.Usuario
 import com.example.driplinesoftapp.utils.SessionManager
+import com.google.android.material.snackbar.Snackbar
 
 class ClienteFragment : Fragment() {
 
@@ -45,7 +45,7 @@ class ClienteFragment : Fragment() {
         val usuario = sessionManager.getUser()
 
         if (usuario == null) {
-            Toast.makeText(requireContext(), "Usuario no autenticado", Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, "Usuario no autenticado", Snackbar.LENGTH_LONG).show()
             return
         }
 
@@ -60,7 +60,7 @@ class ClienteFragment : Fragment() {
             binding.progressBar.visibility = View.GONE
             listaUsuariosOriginal = usuarios
             if (usuarios.isEmpty()) {
-                Toast.makeText(requireContext(), "No hay usuarios asociados", Toast.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "No hay usuarios asociados", Snackbar.LENGTH_LONG).show()
             } else {
                 usuarioAdapter.actualizarLista(usuarios)
             }
@@ -68,7 +68,7 @@ class ClienteFragment : Fragment() {
 
         clienteViewModel.errorMessage.observe(viewLifecycleOwner) { mensajeError ->
             binding.progressBar.visibility = View.GONE
-            Toast.makeText(requireContext(), mensajeError, Toast.LENGTH_SHORT).show()
+            Snackbar.make(binding.root, mensajeError, Snackbar.LENGTH_LONG).show()
         }
 
         configurarSearchView()
@@ -103,7 +103,6 @@ class ClienteFragment : Fragment() {
             binding.tvNoResultados.visibility = View.GONE
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

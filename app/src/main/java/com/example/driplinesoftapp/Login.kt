@@ -39,8 +39,8 @@ class Login : AppCompatActivity() {
 
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
-        tilEmail = findViewById(R.id.tilEmail) // TextInputLayout del email
-        tilPassword = findViewById(R.id.tilPassword) // TextInputLayout de la contraseña
+        tilEmail = findViewById(R.id.tilEmail)
+        tilPassword = findViewById(R.id.tilPassword)
         btnLogin = findViewById(R.id.btnLogin)
         progressBar = findViewById(R.id.progressBar)
         tvRegister = findViewById(R.id.tvRegister)
@@ -53,7 +53,7 @@ class Login : AppCompatActivity() {
         }
 
         if (sessionManager.isLoggedIn()) {
-            navigateToMainActivity(sessionManager.getUser()?.rol ?: "")
+            navigateToSplashActivity(sessionManager.getUser()?.rol ?: "")
         }
 
         // Validación en tiempo real
@@ -82,7 +82,7 @@ class Login : AppCompatActivity() {
                                 sessionManager.saveUser(usuario)
                                 val savedUser = sessionManager.getUser()
                                 Log.d("SESSION", "Usuario guardado en sesión: $savedUser")
-                                navigateToMainActivity(usuario.rol)
+                                navigateToSplashActivity(usuario.rol)
                             } else {
                                 mostrarError("Usuario no encontrado")
                             }
@@ -110,13 +110,8 @@ class Login : AppCompatActivity() {
             validarCampos()
         }
 
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            // No se requiere implementación
-        }
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            // No se requiere implementación
-        }
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
     }
 
     private fun validarCampos() {
@@ -162,19 +157,16 @@ class Login : AppCompatActivity() {
     private fun mostrarError(mensaje: String) {
         val rootView = findViewById<View>(android.R.id.content)
         Snackbar.make(rootView, mensaje, Snackbar.LENGTH_LONG)
-            .setDuration(5000)
             .setBackgroundTint(Color.RED)
             .setTextColor(Color.WHITE)
             .setAction("OK") { }
             .show()
     }
 
-    private fun navigateToMainActivity(rol: String) {
-        if (rol == "admin_cliente") {
-            startActivity(Intent(this@Login, NegocioActivity::class.java))
-        } else {
-            startActivity(Intent(this@Login, MainActivity::class.java))
-        }
+    private fun navigateToSplashActivity(rol: String) {
+        val intent = Intent(this@Login, SplashActivity::class.java)
+        intent.putExtra("USER_ROLE", rol)
+        startActivity(intent)
         finish()
     }
 

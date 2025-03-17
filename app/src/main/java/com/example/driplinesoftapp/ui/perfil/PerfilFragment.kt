@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.driplinesoftapp.Login
 import com.example.driplinesoftapp.R
+import com.example.driplinesoftapp.SplashActivity
 import com.example.driplinesoftapp.databinding.FragmentPerfilBinding
 import com.example.driplinesoftapp.utils.SessionManager
+import com.google.android.material.snackbar.Snackbar
 
 class PerfilFragment : Fragment(), View.OnTouchListener {
 
@@ -56,14 +58,18 @@ class PerfilFragment : Fragment(), View.OnTouchListener {
     private fun cerrarSesion() {
         sessionManager.logout()
         mostrarMensaje("Sesión cerrada correctamente")
-        val intent = Intent(requireContext(), Login::class.java)
+
+        // Mostrar el Splash Screen con el mensaje "Cerrando sesión..."
+        val intent = Intent(requireContext(), SplashActivity::class.java)
+        intent.putExtra("MENSAJE_SPLASH", "Cerrando sesión...") // Agrega el mensaje personalizado
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         requireActivity().finish()
     }
 
     private fun mostrarMensaje(mensaje: String) {
-        Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show()
+        val rootView = requireActivity().findViewById<View>(android.R.id.content)
+        Snackbar.make(rootView, mensaje, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
@@ -77,7 +83,7 @@ class PerfilFragment : Fragment(), View.OnTouchListener {
             MotionEvent.ACTION_DOWN -> startX = event.x
             MotionEvent.ACTION_UP -> {
                 val deltaX = event.x - startX
-                if (deltaX > 200) { // Si desliza más de 200px a la derecha, regresar
+                if (deltaX > 200) {
                     requireActivity().onBackPressedDispatcher.onBackPressed()
                 }
             }
@@ -91,7 +97,7 @@ class PerfilFragment : Fragment(), View.OnTouchListener {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     val scaleDown = ScaleAnimation(
-                        1f, 0.95f,  // Escalar de 100% a 95%
+                        1f, 0.95f,
                         1f, 0.95f,
                         ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
                         ScaleAnimation.RELATIVE_TO_SELF, 0.5f
@@ -102,7 +108,7 @@ class PerfilFragment : Fragment(), View.OnTouchListener {
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     val scaleUp = ScaleAnimation(
-                        0.95f, 1f,  // Regresar a 100%
+                        0.95f, 1f,
                         0.95f, 1f,
                         ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
                         ScaleAnimation.RELATIVE_TO_SELF, 0.5f
