@@ -128,7 +128,7 @@ class Login : AppCompatActivity() {
         }
 
         if (!esPasswordValida) {
-            tilPassword.error = "La contraseña debe tener entre 8 y 16 caracteres"
+            tilPassword.error = "Ingresa tu contraseña"
         } else {
             tilPassword.error = null
         }

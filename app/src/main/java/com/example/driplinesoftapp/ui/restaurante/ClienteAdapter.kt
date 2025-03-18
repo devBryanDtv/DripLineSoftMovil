@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.driplinesoftapp.R
 import com.example.driplinesoftapp.SucursalActivity
+import com.example.driplinesoftapp.api.RetrofitClient
 import com.example.driplinesoftapp.data.Cliente
 import com.example.driplinesoftapp.databinding.ItemClienteBinding
 
@@ -37,8 +38,11 @@ class ClienteAdapter(private var clientes: List<Cliente>) :
 
             tvEstadoSuscripcion.visibility = View.GONE
 
+            // Construir la URL completa de la imagen
+            val logoUrl = RetrofitClient.BASE_URL_IMAGENES + cliente.logo
+
             Glide.with(ivLogo.context)
-                .load(cliente.logo)
+                .load(logoUrl)
                 .placeholder(R.drawable.ic_logo)
                 .into(ivLogo)
 
