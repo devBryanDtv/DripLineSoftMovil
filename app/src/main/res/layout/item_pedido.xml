@@ -96,16 +96,21 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp">
 
-            <!-- Botón -->
-            <Button
+            <!-- Botón Material 3 con color gris y bordes redondeados -->
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancelarPedido"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancelar Pedido"
                 android:textColor="@android:color/white"
-                android:backgroundTint="@android:color/holo_red_dark"
                 android:enabled="true"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                app:cornerRadius="16dp"
+                app:iconPadding="8dp"
+                app:backgroundTint="@android:color/darker_gray"
+                app:strokeColor="@android:color/darker_gray"
+                app:strokeWidth="2dp"
+            />
 
             <!-- ProgressBar dentro del botón -->
             <ProgressBar
@@ -116,6 +121,8 @@
                 android:visibility="gone"
                 android:indeterminateTint="@android:color/white"/>
         </FrameLayout>
+
+
 
     </LinearLayout>
 

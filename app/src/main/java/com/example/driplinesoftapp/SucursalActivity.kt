@@ -25,7 +25,7 @@ class SucursalActivity : AppCompatActivity() {
     private var listaSucursalesOriginal: List<Sucursal> = emptyList()
 
     private val idCliente: Int by lazy { intent.getIntExtra("ID_CLIENTE", -1) }
-    private val logoCliente: String? by lazy { intent.getStringExtra("LOGO_CLIENTE") }
+    private val logoCliente: String? by lazy { intent.getStringExtra("LOGO") }
     private val nombreComercial: String? by lazy { intent.getStringExtra("NOMBRE") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +48,7 @@ class SucursalActivity : AppCompatActivity() {
     private fun mostrarLogoCliente() {
         Glide.with(this)
             .load(logoCliente)
-            .placeholder(R.drawable.ic_logo)
+            .placeholder(R.drawable.ic_sucursales)
             .into(binding.ivLogoCliente)
     }
 

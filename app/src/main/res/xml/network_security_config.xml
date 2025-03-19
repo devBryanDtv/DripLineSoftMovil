@@ -4,7 +4,7 @@
         <domain includeSubdomains="true">hola.com</domain>
     </domain-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.90.74</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
         <domain includeSubdomains="true">https://0a43-200-56-95-130.ngrok-free.app/</domain>
 
         <domain includeSubdomains="true">http://</domain>

@@ -60,6 +60,9 @@ class VerPerfilFragment : Fragment(), View.OnTouchListener {
         binding.tvFechaCreacion.text = Html.fromHtml("<b>Te uniste desde:</b> $fechaFormateada")
         binding.tvNombreUsuario.text = usuario.nombre
 
+        // Mostrar el ProgressBar mientras se cargan los datos
+        binding.progressBar.visibility = View.VISIBLE
+
         when (usuario.rol) {
             "cliente_final" -> {
                 binding.cardPedidos.visibility = VISIBLE
@@ -69,6 +72,7 @@ class VerPerfilFragment : Fragment(), View.OnTouchListener {
 
                 viewModel.cantidadPedidos.observe(viewLifecycleOwner) { cantidadPedidos ->
                     binding.tvCantidadPedidos.text = Html.fromHtml("<b>Pedidos realizados:</b> $cantidadPedidos")
+                    binding.progressBar.visibility = View.GONE // Ocultar ProgressBar cuando los datos se cargan
                 }
             }
 
@@ -80,6 +84,7 @@ class VerPerfilFragment : Fragment(), View.OnTouchListener {
 
                 viewModel.cantidadSucursales.observe(viewLifecycleOwner) { cantidadSucursales ->
                     binding.tvCantidadSucursales.text = Html.fromHtml("<b>Sucursales:</b> $cantidadSucursales")
+                    binding.progressBar.visibility = View.GONE // Ocultar ProgressBar cuando los datos se cargan
                 }
 
                 viewModel.cantidadMenus.observe(viewLifecycleOwner) { cantidadMenus ->
@@ -103,6 +108,7 @@ class VerPerfilFragment : Fragment(), View.OnTouchListener {
             binding.tvCantidadSucursales.text = Html.fromHtml("<b>Error:</b> $error")
             binding.tvCantidadMenus.text = Html.fromHtml("<b>Error:</b> $error")
             binding.tvCantidadProductos.text = Html.fromHtml("<b>Error:</b> $error")
+            binding.progressBar.visibility = View.GONE // Ocultar ProgressBar en caso de error
         }
 
         Log.d("VerPerfilFragment", "✅ Nombre: ${binding.tvNombreUsuario.text}")

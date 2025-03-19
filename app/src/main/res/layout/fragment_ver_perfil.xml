@@ -7,6 +7,19 @@
     android:paddingTop="?attr/actionBarSize"
     android:padding="24dp">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/cardview_dark_background"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="35dp" />
+
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardInformacionUsuario"
         android:layout_width="350dp"

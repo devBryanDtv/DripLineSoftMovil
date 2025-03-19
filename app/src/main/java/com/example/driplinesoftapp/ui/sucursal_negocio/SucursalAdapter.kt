@@ -61,11 +61,8 @@ class SucursalAdapter(
                 cambiarEstadoSucursal(sucursal.idSucursal, isChecked, holder)
             }
 
-            // Cargar el logo del cliente en cada card de sucursal
-            Glide.with(ivLogoSucursal.context)
-                .load(logoCliente)
-                .placeholder(R.drawable.ic_logo)
-                .into(ivLogoSucursal)
+            // Reemplazar Glide por la asignación directa del ícono
+            ivLogoSucursal.setImageResource(R.drawable.ic_restaurante_sucursal)
 
             // Efecto de animación al tocar la card
             root.setOnTouchListener { v, event ->

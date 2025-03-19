@@ -43,7 +43,7 @@ class ClienteAdapter(private var clientes: List<Cliente>) :
 
             Glide.with(ivLogo.context)
                 .load(logoUrl)
-                .placeholder(R.drawable.ic_logo)
+                .placeholder(R.drawable.ic_sucursales)
                 .into(ivLogo)
 
             // Efecto visual al presionar
@@ -57,7 +57,7 @@ class ClienteAdapter(private var clientes: List<Cliente>) :
 
             root.setOnClickListener {
                 val intent = Intent(root.context, SucursalActivity::class.java).apply {
-                    putExtra("LOGO", cliente.logo)
+                    putExtra("LOGO", logoUrl)
                     putExtra("ID_CLIENTE", cliente.idCliente)
                     putExtra("NOMBRE", cliente.nombreComercial)
                 }

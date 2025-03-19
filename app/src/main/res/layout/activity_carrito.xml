@@ -9,6 +9,20 @@
     android:fitsSystemWindows="true"
     android:paddingTop="?attr/actionBarSize">
 
+    <!-- ProgressBar que indica carga -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/cardview_dark_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        android:layout_marginTop="50dp" />
+
     <!-- Lista de productos en el carrito -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCarrito"

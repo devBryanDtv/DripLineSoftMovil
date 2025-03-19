@@ -49,7 +49,7 @@ class ProductoAdapter(
                 val imagenUrl = RetrofitClient.BASE_URL_IMAGENES + producto.imagenes[0].rutaImagen
                 Glide.with(ivImagenProducto.context)
                     .load(imagenUrl)
-                    .placeholder(R.drawable.ic_logo)
+                    .placeholder(R.drawable.ic_food_placeholder)
                     .error(R.drawable.ic_error)
                     .into(ivImagenProducto)
             } else {

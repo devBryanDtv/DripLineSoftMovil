@@ -76,6 +76,9 @@ class CarritoActivity : AppCompatActivity() {
     }
 
     private fun cargarProductosCarrito() {
+        // Mostrar ProgressBar mientras se cargan los productos
+        binding.progressBar.visibility = View.VISIBLE
+
         val productosDelCarrito = dbHelper.obtenerProductosPorUsuario(idUsuario)
 
         if (productosDelCarrito.isNotEmpty()) {
@@ -85,6 +88,8 @@ class CarritoActivity : AppCompatActivity() {
 
             if (productosIds.isEmpty()) {
                 mostrarMensaje("Error: No se encontraron productos válidos en el carrito.")
+                binding.progressBar.visibility = View.GONE  // Ocultar ProgressBar
+
                 return
             }
 
@@ -101,12 +106,15 @@ class CarritoActivity : AppCompatActivity() {
             mostrarMensaje("No hay productos en el carrito.")
             binding.tvSubtotal.text = "Subtotal: $0.00"
             btnRealizarPedido.isEnabled = false
+            binding.progressBar.visibility = View.GONE  // Ocultar ProgressBar
+
         }
     }
 
     private fun obtenerDatosNegocioDesdeAPI(idsProductos: List<Int>) {
         if (idsProductos.isEmpty()) {
             mostrarMensaje("No hay productos para obtener datos del negocio.")
+            binding.progressBar.visibility = View.GONE  // Ocultar ProgressBar
             return
         }
 
@@ -135,18 +143,45 @@ class CarritoActivity : AppCompatActivity() {
                         - Logo Cliente: $logoCliente
                     """.trimIndent())
                         mostrarMensaje("Datos del negocio obtenidos correctamente.")
+                        // Trigger adapter refresh if necessary
+                        if (nombreMenu != null && nombreSucursal != null && nombreComercial != null) {
+                            refreshAdapterWithNewData()
+                        }
                     } else {
                         Log.d("CarritoActivity", "❌ Error al obtener datos del negocio desde el API - Código: ${response.code()}")
                         Log.d("CarritoActivity", "Respuesta del servidor: ${response.errorBody()?.string()}")
                         mostrarMensaje("No se pudieron obtener los datos del negocio.")
                     }
+                    binding.progressBar.visibility = View.GONE  // Ocultar ProgressBar
+
                 }
 
                 override fun onFailure(call: Call<DatosNegocioResponse>, t: Throwable) {
                     Log.e("CarritoActivity", "❗ Error en la conexión al obtener datos del negocio", t)
                     mostrarMensaje("Error en la conexión: ${t.message}")
+                    binding.progressBar.visibility = View.GONE  // Ocultar ProgressBar
+
                 }
             })
+    }
+    // Function to refresh adapter when data is available
+    private fun refreshAdapterWithNewData() {
+        Log.d("CarritoActivity", "Refreshing adapter with new business data.")
+
+        val productosDelCarrito = dbHelper.obtenerProductosPorUsuario(idUsuario)
+
+        if (productosDelCarrito.isNotEmpty()) {
+            val productosIds = productosDelCarrito.map { it.idProducto }
+
+            Log.d("CarritoActivity", "Productos encontrados en el carrito: $productosIds")
+
+            val productosCarrito = productosDelCarrito.map { ProductoCarrito(it.idProducto, it.cantidad) }
+            obtenerDetallesDeProductos(productosCarrito)  // Refresh product details with updated business data
+        } else {
+            mostrarMensaje("No hay productos en el carrito.")
+            binding.tvSubtotal.text = "Subtotal: $0.00"
+            btnRealizarPedido.isEnabled = false
+        }
     }
 
 
