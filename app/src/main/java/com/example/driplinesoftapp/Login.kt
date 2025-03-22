@@ -173,7 +173,6 @@ class Login : AppCompatActivity() {
     private fun mostrarSnackbar(mensaje: String) {
         val rootView = findViewById<View>(android.R.id.content)
         Snackbar.make(rootView, mensaje, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(Color.GREEN)
             .setTextColor(Color.WHITE)
             .setAction("OK") { }
             .show()

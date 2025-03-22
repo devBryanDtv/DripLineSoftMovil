@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                         Snackbar.LENGTH_LONG
                     )
                         .setBackgroundTint(getColor(android.R.color.holo_orange_light))
-                        .setTextColor(getColor(android.R.color.white))
+                        .setTextColor(getColor(android.R.color.black))
                         .setAction("OK") { }  // Acción vacía para cerrar el Snackbar
                         .show()
                 } else {
@@ -127,6 +127,7 @@ class MainActivity : AppCompatActivity() {
                 mensajeExito,
                 Snackbar.LENGTH_INDEFINITE
             )
+                .setTextColor(getColor(android.R.color.white))
                 .setAction("Ver Pedido") {
                     val navView: BottomNavigationView = binding.navView
                     navView.selectedItemId = R.id.navigation_pedido  // 🔹 Cambiar a la pestaña de "Pedidos"

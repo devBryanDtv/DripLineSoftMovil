@@ -203,7 +203,7 @@ class CambiarContrasenaFragment : Fragment(), View.OnTouchListener {
 
     /** ➤ Mostrar Snackbar con colores diferenciados */
     private fun mostrarSnackbar(mensaje: String, esExito: Boolean) {
-        val colorFondo = if (esExito) android.R.color.holo_green_dark else android.R.color.holo_red_dark
+        val colorFondo = if (esExito) android.R.color.background_dark else android.R.color.holo_red_dark
 
         Snackbar.make(requireView(), mensaje, Snackbar.LENGTH_LONG)
             .setBackgroundTint(ContextCompat.getColor(requireContext(), colorFondo))
